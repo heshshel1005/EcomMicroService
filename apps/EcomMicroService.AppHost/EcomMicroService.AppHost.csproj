@@ -1,0 +1,40 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.0.1">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <IsAspireHost>true</IsAspireHost>
+        <UserSecretsId>0aae16e2-bc34-40f6-b9c4-10379cc46b10</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.Hosting.RabbitMQ" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.Hosting.Redis" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.Hosting.Seq" Version="$(AspireVersion)" />
+        <PackageReference Include="IdentityModel" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\apps\EcomMicroService.AuthServer\EcomMicroService.AuthServer.csproj" />
+        <ProjectReference Include="..\..\gateway\EcomMicroService.Gateway\EcomMicroService.Gateway.csproj" />
+        <ProjectReference Include="..\..\services\administration\host\EcomMicroService.Administration.HttpApi.Host\EcomMicroService.Administration.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\identity\host\EcomMicroService.IdentityService.HttpApi.Host\EcomMicroService.IdentityService.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\catalog\host\EcomMicroService.Catalog.HttpApi.Host\EcomMicroService.Catalog.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\basket\host\EcomMicroService.Basket.HttpApi.Host\EcomMicroService.Basket.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\ordering\host\EcomMicroService.Ordering.HttpApi.Host\EcomMicroService.Ordering.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\customer\host\EcomMicroService.Customer.HttpApi.Host\EcomMicroService.Customer.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\payment\host\EcomMicroService.Payment.HttpApi.Host\EcomMicroService.Payment.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\marketing\host\EcomMicroService.Marketing.HttpApi.Host\EcomMicroService.Marketing.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\cms\host\EcomMicroService.Cms.HttpApi.Host\EcomMicroService.Cms.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\notification\host\EcomMicroService.Notification.HttpApi.Host\EcomMicroService.Notification.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\projects\host\EcomMicroService.Projects.HttpApi.Host\EcomMicroService.Projects.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\..\services\saas\host\EcomMicroService.SaaS.HttpApi.Host\EcomMicroService.SaaS.HttpApi.Host.csproj" />
+        <ProjectReference Include="..\EcomMicroService.WebApp\src\EcomMicroService.WebApp.Blazor\EcomMicroService.WebApp.Blazor.csproj" />
+        <ProjectReference Include="..\..\shared\EcomMicroService.DbMigrator\EcomMicroService.DbMigrator.csproj" />
+        <ProjectReference Include="..\..\shared\EcomMicroService.Shared\EcomMicroService.Shared.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+</Project>

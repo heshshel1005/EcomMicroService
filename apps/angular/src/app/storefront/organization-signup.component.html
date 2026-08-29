@@ -1,0 +1,197 @@
+<div class="container py-4 py-md-5">
+  <div class="storefront-org-signup mx-auto">
+    @if (submitResult(); as result) {
+      <div class="card">
+        <div class="card-body">
+          <h1 class="h4 mb-3">{{ 'ECommerce::OrganizationSignupSuccessTitle' | abpLocalization }}</h1>
+          <p class="mb-2">{{ result.message }}</p>
+          @if (result.requestId) {
+            <p class="text-muted small mb-0">
+              {{ 'ECommerce::OrganizationSignupReferenceId' | abpLocalization }}:
+              <span class="font-monospace user-select-all">{{ result.requestId }}</span>
+            </p>
+          }
+          <a routerLink="/" class="btn btn-primary mt-4">{{ 'ECommerce::Menu:Home' | abpLocalization }}</a>
+        </div>
+      </div>
+    } @else {
+      <h1 class="h3 mb-2">{{ 'ECommerce::OrganizationSignupPageTitle' | abpLocalization }}</h1>
+      <p class="text-muted mb-4">{{ 'ECommerce::OrganizationSignupPageIntro' | abpLocalization }}</p>
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="card mb-3">
+          <div class="card-header">{{ 'ECommerce::OrganizationSignupSectionOrganization' | abpLocalization }}</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="org-tenant-name">{{ 'ECommerce::OrganizationSignupTenantName' | abpLocalization }} *</label>
+              <input
+                type="text"
+                id="org-tenant-name"
+                class="form-control"
+                formControlName="tenantName"
+                autocomplete="organization"
+                [class.is-invalid]="form.get('tenantName')?.invalid && form.get('tenantName')?.touched"
+              />
+              <div class="form-text">{{ 'ECommerce::OrganizationSignupTenantNameHelp' | abpLocalization }}</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-display-name">{{ 'ECommerce::OrganizationSignupDisplayName' | abpLocalization }} *</label>
+              <input
+                type="text"
+                id="org-display-name"
+                class="form-control"
+                formControlName="displayName"
+                [class.is-invalid]="form.get('displayName')?.invalid && form.get('displayName')?.touched"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-legal-name">{{ 'ECommerce::OrganizationSignupLegalName' | abpLocalization }}</label>
+              <input type="text" id="org-legal-name" class="form-control" formControlName="legalName" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-business-type">{{ 'ECommerce::OrganizationSignupBusinessType' | abpLocalization }} *</label>
+              <select id="org-business-type" class="form-select" formControlName="businessType">
+                @for (opt of businessTypeOptions; track opt.value) {
+                  <option [ngValue]="opt.value">{{ businessTypeLabelKey(opt.nameKey) | abpLocalization }}</option>
+                }
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-website">{{ 'ECommerce::OrganizationSignupWebsite' | abpLocalization }}</label>
+              <input type="url" id="org-website" class="form-control" formControlName="website" placeholder="https://" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-phone">{{ 'ECommerce::OrganizationSignupPhone' | abpLocalization }}</label>
+              <input type="tel" id="org-phone" class="form-control" formControlName="phone" />
+            </div>
+            <div class="mb-0">
+              <label class="form-label" for="org-desc">{{ 'ECommerce::OrganizationSignupShortDescription' | abpLocalization }}</label>
+              <textarea id="org-desc" class="form-control" rows="3" formControlName="shortDescription"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">{{ 'ECommerce::OrganizationSignupSectionLogo' | abpLocalization }}</div>
+          <div class="card-body">
+            <label class="form-label" for="org-logo">{{ 'ECommerce::OrganizationSignupLogo' | abpLocalization }}</label>
+            <input
+              #logoFileInput
+              type="file"
+              id="org-logo"
+              class="form-control"
+              accept=".jpg,.jpeg,.png,.gif,.webp,.svg,image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+              [disabled]="logoUploading() || submitting()"
+              (change)="onLogoSelected($event)"
+            />
+            <div class="form-text">{{ 'ECommerce::OrganizationSignupLogoHint' | abpLocalization }}</div>
+            @if (logoUploading()) {
+              <p class="text-muted small mt-2 mb-0">
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                {{ 'ECommerce::OrganizationSignupLogoUploading' | abpLocalization }}
+              </p>
+            }
+            @if (logoFileName(); as name) {
+              <div class="d-flex align-items-center gap-2 mt-2">
+                <span class="small text-success">{{ name }}</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clearLogo()" [disabled]="submitting()">
+                  {{ 'ECommerce::OrganizationSignupLogoClear' | abpLocalization }}
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">{{ 'ECommerce::OrganizationSignupSectionAdmin' | abpLocalization }}</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="org-admin-email">{{ 'ECommerce::OrganizationSignupAdminEmail' | abpLocalization }} *</label>
+              <input
+                type="email"
+                id="org-admin-email"
+                class="form-control"
+                formControlName="adminEmail"
+                autocomplete="email"
+                [class.is-invalid]="form.get('adminEmail')?.invalid && form.get('adminEmail')?.touched"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-admin-username">{{ 'ECommerce::OrganizationSignupAdminUserName' | abpLocalization }} *</label>
+              <input
+                type="text"
+                id="org-admin-username"
+                class="form-control"
+                formControlName="adminUserName"
+                autocomplete="username"
+                [class.is-invalid]="form.get('adminUserName')?.invalid && form.get('adminUserName')?.touched"
+              />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-admin-display">{{ 'ECommerce::OrganizationSignupAdminDisplayName' | abpLocalization }} *</label>
+              <input type="text" id="org-admin-display" class="form-control" formControlName="adminDisplayName" autocomplete="name" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="org-admin-password">{{ 'ECommerce::OrganizationSignupAdminPassword' | abpLocalization }} *</label>
+              <div class="input-group">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  id="org-admin-password"
+                  class="form-control"
+                  formControlName="adminPassword"
+                  autocomplete="new-password"
+                  [class.is-invalid]="form.get('adminPassword')?.invalid && form.get('adminPassword')?.touched"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="showPassword = !showPassword"
+                  [attr.aria-pressed]="showPassword"
+                >
+                  {{ (showPassword ? 'ECommerce::OrganizationSignupHidePassword' : 'ECommerce::OrganizationSignupShowPassword') | abpLocalization }}
+                </button>
+              </div>
+            </div>
+            <div class="mb-0">
+              <label class="form-label" for="org-admin-password2">{{ 'ECommerce::OrganizationSignupAdminPasswordConfirm' | abpLocalization }} *</label>
+              <div class="input-group">
+                <input
+                  [type]="showPasswordConfirm ? 'text' : 'password'"
+                  id="org-admin-password2"
+                  class="form-control"
+                  formControlName="adminPasswordConfirm"
+                  autocomplete="new-password"
+                  [class.is-invalid]="
+                    (form.get('adminPasswordConfirm')?.invalid && form.get('adminPasswordConfirm')?.touched) ||
+                    (form.get('adminPasswordConfirm')?.hasError('mismatch') && form.get('adminPasswordConfirm')?.touched)
+                  "
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="showPasswordConfirm = !showPasswordConfirm"
+                  [attr.aria-pressed]="showPasswordConfirm"
+                >
+                  {{
+                    (showPasswordConfirm ? 'ECommerce::OrganizationSignupHidePassword' : 'ECommerce::OrganizationSignupShowPassword')
+                      | abpLocalization
+                  }}
+                </button>
+              </div>
+              @if (form.get('adminPasswordConfirm')?.hasError('mismatch') && form.get('adminPasswordConfirm')?.touched) {
+                <div class="invalid-feedback d-block">{{ 'ECommerce::OrganizationSignupPasswordMismatch' | abpLocalization }}</div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" [disabled]="form.invalid || submitting() || logoUploading()">
+          @if (submitting()) {
+            <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+          }
+          {{ 'ECommerce::OrganizationSignupSubmit' | abpLocalization }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

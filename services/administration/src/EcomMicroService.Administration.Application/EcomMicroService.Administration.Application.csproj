@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Administration</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Mapperly" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Administration.Application.Contracts\EcomMicroService.Administration.Application.Contracts.csproj" />
+        <ProjectReference Include="..\EcomMicroService.Administration.Domain\EcomMicroService.Administration.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

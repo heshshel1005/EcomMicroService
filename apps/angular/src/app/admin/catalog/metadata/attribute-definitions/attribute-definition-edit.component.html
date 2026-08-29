@@ -1,0 +1,241 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ isCreate() ? ('ECommerce::NewAttributeDefinition' | abpLocalization) : ('ECommerce::EditAttributeDefinition' | abpLocalization) }}</h5>
+        <a routerLink="/admin/catalog/attribute-definitions" class="btn btn-outline-secondary btn-sm">
+          <i class="fa fa-arrow-left me-1"></i>
+          {{ 'ECommerce::AttributeDefinitions' | abpLocalization }}
+        </a>
+      </div>
+      <div class="card-body">
+        @if (loading()) {
+          <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+        } @else {
+          @if (isCreate()) {
+            <p class="text-muted small mb-3">
+              New definitions start in draft. Publish (after saving) before mapping them to product types or using them in storefront validation.
+            </p>
+          }
+          @if (!isCreate() && governanceStatus() !== null) {
+            <div class="border rounded p-3 mb-3 bg-light">
+              <h6 class="mb-2">{{ 'ECommerce::AttributeGovernanceWorkflow' | abpLocalization }}</h6>
+              <div class="d-flex flex-wrap align-items-center gap-2 mb-3 small">
+                <span class="text-muted">{{ 'ECommerce::AttributeGovernanceStatus' | abpLocalization }}:</span>
+                <span class="fw-semibold">{{ getGovernanceStatusLabel(governanceStatus()!) | abpLocalization }}</span>
+                <span class="text-muted">·</span>
+                <span class="text-muted">{{ 'ECommerce::AttributePublishedVersion' | abpLocalization }}:</span>
+                <span class="fw-semibold">{{ publishedVersion() }}</span>
+              </div>
+              <div class="d-flex flex-wrap gap-2">
+                @if (governanceStatus() === governanceStatusEnum.Draft) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-sm"
+                    [disabled]="govWorkflowRunning()"
+                    (click)="submitForReview()"
+                  >
+                    {{ 'ECommerce::AttributeGovernanceSubmitForReview' | abpLocalization }}
+                  </button>
+                }
+                @if (governanceStatus() === governanceStatusEnum.PendingReview && canReviewGovernance()) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm"
+                    [disabled]="govWorkflowRunning()"
+                    (click)="rejectReview()"
+                  >
+                    {{ 'ECommerce::AttributeGovernanceRejectReview' | abpLocalization }}
+                  </button>
+                }
+                @if (canPublishGovernance() && governanceStatus() !== governanceStatusEnum.Archived) {
+                  <button
+                    type="button"
+                    class="btn btn-success btn-sm"
+                    [disabled]="govWorkflowRunning()"
+                    (click)="publishDefinition()"
+                  >
+                    {{ 'ECommerce::AttributeGovernancePublish' | abpLocalization }}
+                  </button>
+                }
+                @if (
+                  canPublishGovernance() &&
+                  (governanceStatus() === governanceStatusEnum.Published ||
+                    governanceStatus() === governanceStatusEnum.PendingReview)
+                ) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    [disabled]="govWorkflowRunning()"
+                    (click)="demoteToDraft()"
+                  >
+                    {{ 'ECommerce::AttributeGovernanceDemoteToDraft' | abpLocalization }}
+                  </button>
+                }
+                @if (canPublishGovernance() && governanceStatus() !== governanceStatusEnum.Archived) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger btn-sm"
+                    [disabled]="govWorkflowRunning()"
+                    (click)="archiveDefinition()"
+                  >
+                    {{ 'ECommerce::AttributeGovernanceArchive' | abpLocalization }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" for="key">{{ 'ECommerce::AttributeDefinitionKey' | abpLocalization }}</label>
+                <input id="key" type="text" class="form-control" formControlName="key" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="dataType">{{ 'ECommerce::AttributeDataType' | abpLocalization }}</label>
+                <select id="dataType" class="form-select" formControlName="dataType">
+                  @for (type of dataTypes; track type.value) {
+                    <option [ngValue]="type.value">{{ type.label | abpLocalization }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="allowedValuesJson">{{ 'ECommerce::AllowedValuesJson' | abpLocalization }}</label>
+                <input id="allowedValuesJson" type="text" class="form-control" formControlName="allowedValuesJson" />
+                @if (isEnumDataType()) {
+                  <div class="form-text">JSON array of invariant strings, e.g. ["red","blue"].</div>
+                }
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="regexPattern">{{ 'ECommerce::RegexPattern' | abpLocalization }}</label>
+                <input id="regexPattern" type="text" class="form-control" formControlName="regexPattern" />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="minValue">{{ 'ECommerce::MinValue' | abpLocalization }}</label>
+                <input id="minValue" type="number" class="form-control" formControlName="minValue" />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="maxValue">{{ 'ECommerce::MaxValue' | abpLocalization }}</label>
+                <input id="maxValue" type="number" class="form-control" formControlName="maxValue" />
+              </div>
+              <div class="col-md-3">
+                <div class="form-check mt-4">
+                  <input id="isRequired" type="checkbox" class="form-check-input" formControlName="isRequired" />
+                  <label class="form-check-label" for="isRequired">{{ 'ECommerce::Required' | abpLocalization }}</label>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-check mt-4">
+                  <input id="isRecommended" type="checkbox" class="form-check-input" formControlName="isRecommended" />
+                  <label class="form-check-label" for="isRecommended">{{ 'ECommerce::Recommended' | abpLocalization }}</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Translations</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTranslation()">+ Translation</button>
+              </div>
+              <div formArrayName="translations" class="d-flex flex-column gap-2">
+                @for (translation of translations.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="border rounded p-2">
+                    <div class="row g-2 align-items-end">
+                      <div class="col-md-3">
+                        <label class="form-label small">Language</label>
+                        <select class="form-select form-select-sm" formControlName="language">
+                          <option value="">-- Select language --</option>
+                          @for (lang of languages(); track lang.cultureName) {
+                            <option [value]="lang.cultureName">{{ lang.displayName }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label small">Display name</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="name" />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label small">Description</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="description" />
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" (click)="removeTranslation(i)">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+              @if (hasDuplicateLanguages()) {
+                <div class="text-danger small mt-2">Duplicate translation languages are not allowed.</div>
+              }
+              @if (hasMissingDefaultLanguageTranslation()) {
+                <div class="text-danger small mt-2">
+                  A translation for the default language ({{ defaultLanguage() }}) is required.
+                </div>
+              }
+            </div>
+
+            @if (isEnumDataType()) {
+              <div class="mt-4">
+                <h6 class="mb-2">Enum option labels</h6>
+                <p class="text-muted small mb-3">Localized display names per invariant value from allowed values JSON.</p>
+                @if (optionRows.length === 0) {
+                  <p class="text-muted small mb-0">Add a non-empty JSON array to allowed values to edit option labels.</p>
+                }
+                @for (_ of optionRows.controls; track $index; let oi = $index) {
+                  <div [formGroup]="$any(optionRows.at(oi))" class="border rounded p-3 mb-3">
+                    <div class="fw-semibold mb-2">
+                      Value:
+                      <code>{{ $any(optionRows.at(oi).get('value'))?.value }}</code>
+                    </div>
+                    <div formArrayName="translations" class="d-flex flex-column gap-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="small text-muted">Translations</span>
+                        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addOptionTranslation(oi)">+ Label</button>
+                      </div>
+                      @for (__ of optionTranslations(oi).controls; track $index; let ti = $index) {
+                        <div [formGroupName]="ti" class="row g-2 align-items-end border-top pt-2">
+                          <div class="col-md-4">
+                            <label class="form-label small">Language</label>
+                            <select class="form-select form-select-sm" formControlName="language">
+                              <option value="">-- Select language --</option>
+                              @for (lang of languages(); track lang.cultureName) {
+                                <option [value]="lang.cultureName">{{ lang.displayName }}</option>
+                              }
+                            </select>
+                          </div>
+                          <div class="col-md-5">
+                            <label class="form-label small">Display name</label>
+                            <input type="text" class="form-control form-control-sm" formControlName="displayName" />
+                          </div>
+                          <div class="col-md-3">
+                            <button type="button" class="btn btn-outline-danger btn-sm w-100" (click)="removeOptionTranslation(oi, ti)">Remove</button>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+                @if (optionRows.length > 0 && hasInvalidOptionTranslations()) {
+                  <div class="text-danger small mt-2">
+                    Each option with translations needs unique languages and a label for the default language ({{ defaultLanguage() }}).
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || hasDuplicateLanguages() || hasMissingDefaultLanguageTranslation() || hasInvalidOptionTranslations() || saving()">
+                @if (saving()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ isCreate() ? ('ECommerce::Create' | abpLocalization) : ('ECommerce::Save' | abpLocalization) }}
+              </button>
+              <a routerLink="/admin/catalog/attribute-definitions" class="btn btn-outline-secondary">{{ 'ECommerce::Cancel' | abpLocalization }}</a>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.IdentityService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Account.HttpApi" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.IdentityService.Application.Contracts\EcomMicroService.IdentityService.Application.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

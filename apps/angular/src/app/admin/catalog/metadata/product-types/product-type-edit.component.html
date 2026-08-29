@@ -1,0 +1,149 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">{{ isCreate() ? ('ECommerce::NewProductType' | abpLocalization) : ('ECommerce::EditProductType' | abpLocalization) }}</h5>
+        <a routerLink="/admin/catalog/product-types" class="btn btn-outline-secondary btn-sm">
+          <i class="fa fa-arrow-left me-1"></i>
+          {{ 'ECommerce::ProductTypes' | abpLocalization }}
+        </a>
+      </div>
+      <div class="card-body">
+        @if (loading()) {
+          <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="code" class="form-label">{{ 'ECommerce::ProductTypeCode' | abpLocalization }}</label>
+              <input id="code" type="text" class="form-control" formControlName="code" />
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">{{ 'ECommerce::ProductTypeName' | abpLocalization }}</label>
+              <input id="name" type="text" class="form-control" formControlName="name" />
+            </div>
+            <div class="form-check mb-3">
+              <input id="isActive" type="checkbox" class="form-check-input" formControlName="isActive" />
+              <label for="isActive" class="form-check-label">{{ 'ECommerce::IsActive' | abpLocalization }}</label>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Translations</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTranslation()">+ Translation</button>
+              </div>
+              <div formArrayName="translations" class="d-flex flex-column gap-2">
+                @for (translation of translations.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="border rounded p-2">
+                    <div class="row g-2 align-items-end">
+                      <div class="col-md-4">
+                        <label class="form-label small">Language</label>
+                        <select class="form-select form-select-sm" formControlName="language">
+                          <option value="">-- Select language --</option>
+                          @for (lang of languages(); track lang.cultureName) {
+                            <option [value]="lang.cultureName">{{ lang.displayName }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label small">Name</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="name" />
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" (click)="removeTranslation(i)">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+              @if (hasDuplicateLanguages()) {
+                <div class="text-danger small mt-2">Duplicate translation languages are not allowed.</div>
+              }
+              @if (hasMissingDefaultLanguageTranslation()) {
+                <div class="text-danger small mt-2">
+                  A translation for the default language ({{ defaultLanguage() }}) is required.
+                </div>
+              }
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="form.invalid || hasDuplicateLanguages() || hasMissingDefaultLanguageTranslation() || saving()"
+              >
+                @if (saving()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ isCreate() ? ('ECommerce::Create' | abpLocalization) : ('ECommerce::Save' | abpLocalization) }}
+              </button>
+              <a routerLink="/admin/catalog/product-types" class="btn btn-outline-secondary">{{ 'ECommerce::Cancel' | abpLocalization }}</a>
+            </div>
+          </form>
+
+          @if (!isCreate()) {
+            <hr class="my-4" />
+            <h6 class="mb-3">{{ 'ECommerce::AttributeMapping' | abpLocalization }}</h6>
+            <p class="text-muted small mb-3">
+              {{ 'ECommerce::AttributeMappingHelp' | abpLocalization }}
+            </p>
+            @if (unpublishedRulesPendingRemoval().length > 0) {
+              <div class="alert alert-warning small py-2">
+                Some mapped attributes are not published. Saving the mapping will remove them from this product type until those
+                definitions are published again.
+              </div>
+            }
+            <div class="table-responsive">
+              <table class="table table-sm table-hover">
+                <thead>
+                  <tr>
+                    <th style="width: 56px;"></th>
+                    <th>{{ 'ECommerce::AttributeDefinitionKey' | abpLocalization }}</th>
+                    <th style="width: 140px;">{{ 'ECommerce::DisplayOrder' | abpLocalization }}</th>
+                    <th style="width: 140px;">{{ 'ECommerce::AttributeDataType' | abpLocalization }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (definition of publishedDefinitionsForMapping(); track definition.id) {
+                    <tr>
+                      <td>
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          [checked]="isDefinitionSelected(definition.id)"
+                          (change)="onToggleDefinition(definition.id, $any($event.target).checked)"
+                        />
+                      </td>
+                      <td>{{ definition.key }}</td>
+                      <td>
+                        <input
+                          type="number"
+                          class="form-control form-control-sm"
+                          min="0"
+                          [disabled]="!isDefinitionSelected(definition.id)"
+                          [value]="getDisplayOrder(definition.id)"
+                          (change)="onChangeDisplayOrder(definition.id, $any($event.target).value)"
+                        />
+                      </td>
+                      <td>{{ getDataTypeLabel(definition.dataType) | abpLocalization }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex justify-content-end">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                [disabled]="savingRules()"
+                (click)="saveRules()"
+              >
+                @if (savingRules()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ 'ECommerce::SaveAttributeMapping' | abpLocalization }}
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

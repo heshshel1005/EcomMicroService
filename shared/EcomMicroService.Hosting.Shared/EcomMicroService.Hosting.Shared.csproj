@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.Seq" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.StackExchange.Redis" Version="$(AspireVersion)" />
+        <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="$(AspireVersion)" />
+        <PackageReference Include="DistributedLock.Redis" Version="1.0.3.0" />
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(MicrosoftAspNetVersion)" />
+        <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Serilog" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Autofac" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.BackgroundJobs.RabbitMq" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Caching.StackExchangeRedis" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.DistributedLocking" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.EventBus.RabbitMQ" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.MultiTenancy" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Swashbuckle" Version="$(AbpVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\EcomMicroService.Shared\EcomMicroService.Shared.csproj" />
+    </ItemGroup>
+    
+</Project>

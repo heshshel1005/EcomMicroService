@@ -1,0 +1,151 @@
+<!-- Floating Premium Toast Notification -->
+<div class="custom-toast" [class.show]="successMessage">
+  <div class="toast-content">
+    <i class="fas fa-check-circle toast-icon"></i>
+    <span class="toast-message">{{ successMessage }}</span>
+  </div>
+</div>
+
+<div class="catalog-container">
+  <!-- Dynamic Gradient Hero Header -->
+  <div class="catalog-hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>Infinite E-Commerce</h1>
+      <p>Discover products, brands, and models designed for your next adventure.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Filter Sidebar (Glassmorphic Card) -->
+    <div class="col-lg-3">
+      <div class="filter-card">
+        <h3 class="filter-title">
+          <i class="fas fa-sliders-h"></i> Filters
+        </h3>
+        
+        <!-- Search bar -->
+        <div class="mb-4">
+          <label class="form-label">Search Products</label>
+          <div class="search-input-group">
+            <i class="fas fa-search search-icon"></i>
+            <input 
+              type="text" 
+              class="form-control filter-control" 
+              placeholder="What are you looking for?"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="applyFilters()">
+          </div>
+        </div>
+
+        <!-- Categories Dropdown / Select -->
+        <div class="mb-4">
+          <label class="form-label">Category</label>
+          <select 
+            class="form-select filter-control" 
+            [(ngModel)]="selectedCategory" 
+            (change)="applyFilters()">
+            <option [ngValue]="null">All Categories</option>
+            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+          </select>
+        </div>
+
+        <!-- Brand Dropdown -->
+        <div class="mb-4">
+          <label class="form-label">Brand</label>
+          <select 
+            class="form-select filter-control" 
+            [(ngModel)]="selectedBrand" 
+            (change)="onBrandChange()">
+            <option [ngValue]="null">All Brands</option>
+            <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+          </select>
+        </div>
+
+        <!-- Model Dropdown (Enabled only when Brand is selected) -->
+        <div class="mb-4">
+          <label class="form-label">Model</label>
+          <select 
+            class="form-select filter-control" 
+            [(ngModel)]="selectedModel" 
+            (change)="applyFilters()" 
+            [disabled]="!selectedBrand">
+            <option [ngValue]="null">All Models</option>
+            <option *ngFor="let model of models" [value]="model.id">{{ model.name }}</option>
+          </select>
+        </div>
+
+        <button class="btn btn-reset w-100" (click)="clearFilters()">
+          <i class="fas fa-sync-alt"></i> Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="col-lg-9">
+      <!-- Loading indicator -->
+      <div class="loader-container" *ngIf="loading">
+        <div class="spinner"></div>
+        <p>Loading catalog items...</p>
+      </div>
+
+      <!-- No products found state -->
+      <div class="no-results-card" *ngIf="!loading && products.length === 0">
+        <i class="fas fa-search no-results-icon"></i>
+        <h4>No products match your filters</h4>
+        <p>Try resetting the search filters or using different keywords.</p>
+        <button class="btn btn-primary" (click)="clearFilters()">Clear Filters</button>
+      </div>
+
+      <!-- Grid list -->
+      <div class="row g-4" *ngIf="!loading && products.length > 0">
+        <div class="col-md-6 col-xl-4" *ngFor="let product of products">
+          <div class="product-glass-card" (click)="viewProductDetails(product.id)">
+            <!-- Card Badge -->
+            <span class="featured-badge" *ngIf="product.isFeatured">Featured</span>
+            
+            <div class="card-img-wrapper">
+              <img [src]="product.imageUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400'" 
+                   alt="{{ product.name }}" 
+                   class="product-img">
+            </div>
+
+            <div class="card-body-content">
+              <div class="meta-row">
+                <span class="category-tag">{{ product.sku }}</span>
+                <span class="stock-status" [class.low-stock]="product.stockQuantity <= 5">
+                  {{ product.stockQuantity > 0 ? product.stockQuantity + ' in stock' : 'Out of Stock' }}
+                </span>
+              </div>
+
+              <h4 class="product-name">{{ product.name }}</h4>
+              <p class="product-description">{{ product.description | slice:0:70 }}{{ product.description.length > 70 ? '...' : '' }}</p>
+
+              <div class="rating-stars">
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star text-warning"></i>
+                <i class="fas fa-star-half-alt text-warning"></i>
+                <span class="review-count">(4.5)</span>
+              </div>
+
+              <div class="price-action-row">
+                <div class="price-col">
+                  <span class="price-lbl">Price</span>
+                  <span class="price-val">{{ product.price | currency:'USD' }}</span>
+                </div>
+                <button 
+                  class="btn btn-add-cart" 
+                  (click)="addToCart(product, $event)"
+                  [disabled]="product.stockQuantity <= 0">
+                  <i class="fas fa-plus"></i> Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

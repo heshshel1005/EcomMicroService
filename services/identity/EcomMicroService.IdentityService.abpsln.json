@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EcomMicroService.IdentityService": {
+      "path": "EcomMicroService.IdentityService.abpmdl.json"
+    }
+  }
+}

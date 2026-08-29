@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EcomMicroService.SaaS": {
+      "path": "EcomMicroService.SaaS.abpmdl.json"
+    }
+  }
+}

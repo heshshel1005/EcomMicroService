@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Ordering</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Domain" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Ordering.Domain.Shared\EcomMicroService.Ordering.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

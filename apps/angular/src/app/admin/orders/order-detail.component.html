@@ -1,0 +1,124 @@
+<div class="row">
+  <div class="col-12">
+    @if (loading()) {
+      <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+    } @else if (!order()) {
+      <p class="text-muted">{{ 'ECommerce::ProductNotFound' | abpLocalization }}</p>
+      <a routerLink="/admin/orders" class="btn btn-outline-secondary">{{ 'ECommerce::Cancel' | abpLocalization }}</a>
+    } @else {
+      <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <h5 class="mb-0">{{ 'ECommerce::OrderDetail' | abpLocalization }} — {{ order()!.id }}</h5>
+          <a routerLink="/admin/orders" class="btn btn-outline-secondary btn-sm">{{ 'ECommerce::Orders' | abpLocalization }}</a>
+        </div>
+        <div class="card-body">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <h6 class="text-muted">{{ 'ECommerce::OrderStatus' | abpLocalization }}</h6>
+              <p class="mb-0">{{ statusLabel(order()!.status) | abpLocalization }}</p>
+            </div>
+            <div class="col-md-6">
+              <h6 class="text-muted">{{ 'ECommerce::OrderDate' | abpLocalization }}</h6>
+              <p class="mb-0">{{ order()!.creationTime | date:'medium' }}</p>
+            </div>
+          </div>
+
+          <hr />
+
+          <h6 class="text-muted">{{ 'ECommerce::ShippingContact' | abpLocalization }}</h6>
+          <p class="mb-1"><strong>{{ 'ECommerce::ContactEmail' | abpLocalization }}:</strong> {{ order()!.contactEmail }}</p>
+          @if (order()!.contactPhone) {
+            <p class="mb-1"><strong>{{ 'ECommerce::ContactPhone' | abpLocalization }}:</strong> {{ order()!.contactPhone }}</p>
+          }
+          @if (order()!.contactName) {
+            <p class="mb-1"><strong>{{ 'ECommerce::ContactName' | abpLocalization }}:</strong> {{ order()!.contactName }}</p>
+          }
+          <p class="mb-0">
+            {{ order()!.shippingStreet }}@if (order()!.shippingStreet2) {, {{ order()!.shippingStreet2 }}}<br />
+            @if (order()!.shippingCity || order()!.shippingRegion || order()!.shippingPostalCode) {
+              {{ order()!.shippingCity }}@if (order()!.shippingRegion) {, {{ order()!.shippingRegion }}}@if (order()!.shippingPostalCode) { {{ order()!.shippingPostalCode }}}<br />
+            }
+            @if (order()!.shippingCountry) {
+              {{ order()!.shippingCountry }}
+            }
+          </p>
+          @if (order()!.shippingMethodName) {
+            <p class="mb-0 mt-1"><strong>{{ 'ECommerce::ShippingMethod' | abpLocalization }}:</strong> {{ order()!.shippingMethodName }}</p>
+          }
+
+          <hr />
+
+          <h6 class="text-muted">{{ 'ECommerce::CheckoutSummary' | abpLocalization }}</h6>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>{{ 'ECommerce::ProductName' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::Sku' | abpLocalization }}</th>
+                  <th class="text-end">{{ 'ECommerce::Quantity' | abpLocalization }}</th>
+                  <th class="text-end">{{ 'ECommerce::Price' | abpLocalization }}</th>
+                  <th class="text-end">{{ 'ECommerce::OrderTotal' | abpLocalization }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of order()!.lines; track line.id) {
+                  <tr>
+                    <td>{{ line.productName }}</td>
+                    <td>{{ line.sku }}</td>
+                    <td class="text-end">{{ line.quantity }}</td>
+                    <td class="text-end">{{ line.unitPrice | number:'1.2-2' }}</td>
+                    <td class="text-end">{{ line.lineTotal | number:'1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <p class="mb-0"><strong>{{ 'ECommerce::SubTotal' | abpLocalization }}:</strong> {{ order()!.subTotal | number:'1.2-2' }}</p>
+          <p class="mb-0"><strong>{{ 'ECommerce::Shipping' | abpLocalization }}:</strong> {{ order()!.shippingAmount | number:'1.2-2' }}</p>
+          <p class="mb-0"><strong>{{ 'ECommerce::Tax' | abpLocalization }}:</strong> {{ order()!.taxAmount | number:'1.2-2' }}</p>
+          <p class="mb-0"><strong>{{ 'ECommerce::Total' | abpLocalization }}:</strong> {{ order()!.total | number:'1.2-2' }}</p>
+
+          <hr />
+
+          <h6 class="text-muted">{{ 'ECommerce::StatusHistory' | abpLocalization }}</h6>
+          @if (order()!.statusHistory && order()!.statusHistory.length > 0) {
+            <ul class="list-unstyled mb-0">
+              @for (h of order()!.statusHistory; track h.id) {
+                <li>{{ statusLabel(h.status) | abpLocalization }} — {{ h.creationTime | date:'medium' }}</li>
+              }
+            </ul>
+          } @else {
+            <p class="text-muted mb-0">{{ statusLabel(order()!.status) | abpLocalization }} (current)</p>
+          }
+
+          <hr />
+
+          <h6 class="text-muted">{{ 'ECommerce::UpdateStatus' | abpLocalization }}</h6>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <select
+              class="form-select form-select-sm"
+              style="width: auto;"
+              [value]="newStatus()"
+              (change)="newStatus.set($any($event.target).value)"
+            >
+              @for (opt of statusOptions; track opt) {
+                <option [value]="opt">{{ statusLabel(opt) | abpLocalization }}</option>
+              }
+            </select>
+            <button
+              type="button"
+              class="btn btn-primary btn-sm"
+              [disabled]="savingStatus() || newStatus() === order()!.status"
+              (click)="updateStatus()"
+            >
+              @if (savingStatus()) {
+                <span class="spinner-border spinner-border-sm me-1"></span>
+              }
+              {{ 'ECommerce::Save' | abpLocalization }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

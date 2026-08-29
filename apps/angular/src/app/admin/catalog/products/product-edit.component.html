@@ -1,0 +1,282 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          @if (isCreate()) {
+            {{ 'ECommerce::NewProduct' | abpLocalization }}
+          } @else {
+            {{ 'ECommerce::EditProduct' | abpLocalization }}
+          }
+        </h5>
+        <a routerLink="/admin/catalog/products" class="btn btn-outline-secondary btn-sm">
+          <i class="fa fa-arrow-left me-1"></i>
+          {{ 'ECommerce::Products' | abpLocalization }}
+        </a>
+      </div>
+      <div class="card-body">
+        @if (loading()) {
+          <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="productNumber" class="form-label">{{ 'ECommerce::ProductNumber' | abpLocalization }}</label>
+              <input id="productNumber" type="text" class="form-control" formControlName="productNumber" />
+              @if (form.get('productNumber')?.invalid && form.get('productNumber')?.touched) {
+                <div class="invalid-feedback d-block">Product number is required (max 64 characters).</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="name" class="form-label">{{ 'ECommerce::ProductName' | abpLocalization }}</label>
+              <input id="name" type="text" class="form-control" formControlName="name" />
+              @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                <div class="invalid-feedback d-block">Name is required (max 512 characters).</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">{{ 'ECommerce::ProductDescription' | abpLocalization }}</label>
+              <textarea id="description" class="form-control" formControlName="description" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Translations</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTranslation()">+ Translation</button>
+              </div>
+              <div formArrayName="translations" class="d-flex flex-column gap-2">
+                @for (translation of translations.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="border rounded p-2">
+                    <div class="row g-2 align-items-end">
+                      <div class="col-md-3">
+                        <label class="form-label small">Language</label>
+                        <select class="form-select form-select-sm" formControlName="language">
+                          <option value="">-- Select language --</option>
+                          @for (lang of languages(); track lang.cultureName) {
+                            <option [value]="lang.cultureName">{{ lang.displayName }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label small">Name</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="name" />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label small">Description</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="description" />
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" (click)="removeTranslation(i)">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+              @if (hasDuplicateLanguages()) {
+                <div class="text-danger small mt-2">Duplicate translation languages are not allowed.</div>
+              }
+              @if (hasMissingDefaultLanguageTranslation()) {
+                <div class="text-danger small mt-2">
+                  A translation for the default language ({{ defaultLanguage() }}) is required.
+                </div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="brandId" class="form-label">{{ 'ECommerce::Brand' | abpLocalization }}</label>
+              <select id="brandId" class="form-select" formControlName="brandId">
+                <option value="">{{ 'ECommerce::SelectBrand' | abpLocalization }}</option>
+                @for (b of brandOptions(); track b.id) {
+                  <option [value]="b.id">{{ b.name }}</option>
+                }
+              </select>
+              @if (form.get('brandId')?.invalid && form.get('brandId')?.touched) {
+                <div class="invalid-feedback d-block">{{ 'ECommerce::BrandIsRequired' | abpLocalization }}</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="modelId" class="form-label">{{ 'ECommerce::Model' | abpLocalization }}</label>
+              <select id="modelId" class="form-select" formControlName="modelId">
+                <option [ngValue]="null">— {{ 'ECommerce::None' | abpLocalization }} —</option>
+                @for (m of modelOptions(); track m.id) {
+                  <option [ngValue]="m.id">{{ m.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="categoryId" class="form-label">{{ 'ECommerce::ProductCategory' | abpLocalization }}</label>
+              <select id="categoryId" class="form-select" formControlName="categoryId">
+                <option [ngValue]="null">— {{ 'ECommerce::None' | abpLocalization }} —</option>
+                @for (c of categoryOptions(); track c.id) {
+                  <option [ngValue]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="productTypeId" class="form-label">Product Type</label>
+              <select id="productTypeId" class="form-select" formControlName="productTypeId">
+                <option [ngValue]="null">— {{ 'ECommerce::None' | abpLocalization }} —</option>
+                @for (pt of productTypeOptions(); track pt.id) {
+                  <option [ngValue]="pt.id">{{ pt.name }}</option>
+                }
+              </select>
+            </div>
+            @if (form.get('productTypeId')?.value) {
+              <p class="text-muted small">
+                Dynamic attributes are configured per variant for this product type.
+              </p>
+            }
+            <div class="mb-3 form-check">
+              <input id="isPublished" type="checkbox" class="form-check-input" formControlName="isPublished" />
+              <label for="isPublished" class="form-check-label">{{ 'ECommerce::ProductPublished' | abpLocalization }}</label>
+            </div>
+
+            <h6 class="mt-4 mb-2">{{ 'ECommerce::Variants' | abpLocalization }}</h6>
+            <div formArrayName="variants">
+              @for (v of variants.controls; track $index; let vi = $index) {
+                <div class="border rounded p-3 mb-3" [formGroupName]="vi">
+                  <div class="row g-2">
+                    <div class="col-md-3">
+                      <label class="form-label small">{{ 'ECommerce::Sku' | abpLocalization }}</label>
+                      <input type="text" class="form-control form-control-sm" formControlName="sku" />
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label small">{{ 'ECommerce::Price' | abpLocalization }}</label>
+                      <input type="number" step="0.01" class="form-control form-control-sm" formControlName="price" />
+                    </div>
+                    <div class="col-md-2">
+                      <label class="form-label small">{{ 'ECommerce::Quantity' | abpLocalization }}</label>
+                      <input type="number" min="0" class="form-control form-control-sm" formControlName="quantity" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                      <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeVariant(vi)">
+                        {{ 'ECommerce::RemoveVariant' | abpLocalization }}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="mt-2">
+                    <span class="small text-muted">{{ 'ECommerce::Attributes' | abpLocalization }}:</span>
+                    <div formArrayName="attributes" class="d-flex flex-wrap gap-2 align-items-center mt-1">
+                      @for (a of getVariantAttributes(vi).controls; track $index; let ai = $index) {
+                        <div [formGroupName]="ai" class="d-flex gap-1 align-items-center">
+                          <select class="form-select form-select-sm" style="width: auto;" formControlName="productAttributeId">
+                            @for (attr of attributeOptions(); track attr.id) {
+                              <option [value]="attr.id">{{ attr.name }}</option>
+                            }
+                          </select>
+                          <input type="text" class="form-control form-control-sm" style="width: 80px;" formControlName="value" placeholder="Value" />
+                          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="removeAttributeFromVariant(vi, ai)">×</button>
+                        </div>
+                      }
+                      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="addAttributeToVariant(vi)">+ {{ 'ECommerce::Attributes' | abpLocalization }}</button>
+                    </div>
+                  </div>
+                  @if (form.get('productTypeId')?.value) {
+                    <div class="col-12 mt-2" formGroupName="dynamicAttributes">
+                      <div class="border rounded p-2">
+                        <div class="small fw-semibold mb-2">Dynamic Attributes</div>
+                        @if (requiredAttributeDefinitions().length === 0 && recommendedAttributeDefinitions().length === 0) {
+                          <p class="text-muted mb-0">No dynamic attributes configured for this product type.</p>
+                        }
+                        @if (requiredAttributeDefinitions().length > 0) {
+                          <div class="small text-muted mb-1">Required</div>
+                          <div class="row g-2 mb-2">
+                            @for (attribute of requiredAttributeDefinitions(); track attribute.key) {
+                              <div class="col-md-4">
+                                <label class="form-label small">
+                                  {{ getAttributeDisplayName(attribute) }} <span class="text-danger">*</span>
+                                </label>
+                                @if (getAllowedValues(attribute).length > 0) {
+                                  <select class="form-select form-select-sm" [formControlName]="attribute.key">
+                                    <option value="">-- Select --</option>
+                                    @for (option of getAllowedValues(attribute); track option) {
+                                      <option [value]="option">{{ getOptionLabel(attribute, option) }}</option>
+                                    }
+                                  </select>
+                                } @else {
+                                  <input class="form-control form-control-sm" [type]="getAttributeInputType(attribute)" [formControlName]="attribute.key" />
+                                }
+                              </div>
+                            }
+                          </div>
+                        }
+                        @if (recommendedAttributeDefinitions().length > 0) {
+                          <div class="small text-muted mb-1">Recommended</div>
+                          <div class="row g-2">
+                            @for (attribute of recommendedAttributeDefinitions(); track attribute.key) {
+                              <div class="col-md-4">
+                                <label class="form-label small">{{ getAttributeDisplayName(attribute) }}</label>
+                                @if (getAllowedValues(attribute).length > 0) {
+                                  <select class="form-select form-select-sm" [formControlName]="attribute.key">
+                                    <option value="">-- Select --</option>
+                                    @for (option of getAllowedValues(attribute); track option) {
+                                      <option [value]="option">{{ getOptionLabel(attribute, option) }}</option>
+                                    }
+                                  </select>
+                                } @else {
+                                  <input class="form-control form-control-sm" [type]="getAttributeInputType(attribute)" [formControlName]="attribute.key" />
+                                }
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+              <button type="button" class="btn btn-outline-primary btn-sm mb-3" (click)="addVariant()">
+                {{ 'ECommerce::AddVariant' | abpLocalization }}
+              </button>
+            </div>
+
+            @if (id(); as productId) {
+              <h6 class="mt-4 mb-2">{{ 'ECommerce::Media' | abpLocalization }}</h6>
+              <input #fileInput type="file" accept="image/*,video/*" class="d-none" (change)="onFileSelected($event)" />
+              <div class="mb-2">
+                <button type="button" class="btn btn-outline-primary btn-sm me-1" [disabled]="uploadingMedia()" (click)="triggerFileUpload(0)">
+                  {{ 'ECommerce::UploadImage' | abpLocalization }}
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-sm" [disabled]="uploadingMedia()" (click)="triggerFileUpload(1)">
+                  {{ 'ECommerce::UploadVideo' | abpLocalization }}
+                </button>
+                @if (uploadingMedia()) {
+                  <span class="ms-2 spinner-border spinner-border-sm"></span>
+                }
+              </div>
+              <div class="d-flex flex-wrap gap-3">
+                @for (m of mediaList(); track m.id) {
+                  <div class="border rounded p-2 text-center" style="max-width: 140px;">
+                    @if (isImage(m)) {
+                      <img [src]="getMediaFileUrl(m.id)" alt="" style="max-height: 80px; max-width: 120px;" />
+                    } @else {
+                      <span class="text-muted small">Video</span>
+                    }
+                    @if (m.isPrimary) {
+                      <span class="badge bg-primary small">Primary</span>
+                    }
+                    <div class="mt-1 btn-group btn-group-sm">
+                      <button type="button" class="btn btn-outline-primary" [title]="'ECommerce::SetPrimary' | abpLocalization" [disabled]="m.isPrimary" (click)="setPrimaryMedia(m)">
+                        <i class="fa fa-star"></i>
+                      </button>
+                      <button type="button" class="btn btn-outline-danger" [title]="'ECommerce::DeleteMedia' | abpLocalization" (click)="deleteMedia(m)">
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+
+            <div class="d-flex gap-2 mt-4">
+              <button type="submit" class="btn btn-primary" [disabled]="form.invalid || hasDuplicateLanguages() || hasMissingDefaultLanguageTranslation() || saving()">
+                @if (saving()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{ isCreate() ? ('ECommerce::Create' | abpLocalization) : ('ECommerce::Save' | abpLocalization) }}
+              </button>
+              <a routerLink="/admin/catalog/products" class="btn btn-outline-secondary">{{ 'ECommerce::Cancel' | abpLocalization }}</a>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>

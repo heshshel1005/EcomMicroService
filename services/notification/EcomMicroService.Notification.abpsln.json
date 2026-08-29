@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EcomMicroService.Notification": {
+      "path": "EcomMicroService.Notification.abpmdl.json"
+    }
+  }
+}

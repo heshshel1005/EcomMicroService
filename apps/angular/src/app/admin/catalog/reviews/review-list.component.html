@@ -1,0 +1,116 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">{{ 'ECommerce::ProductReviews' | abpLocalization }}</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-2 mb-3">
+          <div class="col-auto">
+            <label class="form-label mb-0 me-2">{{ 'ECommerce::ReviewStatus' | abpLocalization }}</label>
+          </div>
+          <div class="col-auto">
+            <select
+              class="form-select form-select-sm"
+              [value]="statusFilter() ?? ''"
+              (change)="statusFilter.set($any($event.target).value === '' ? null : +$any($event.target).value); onStatusFilterChange()"
+            >
+              <option value="">— {{ 'ECommerce::None' | abpLocalization }} —</option>
+              <option [value]="ReviewStatus.Pending">{{ 'ECommerce::ReviewStatusPending' | abpLocalization }}</option>
+              <option [value]="ReviewStatus.Approved">{{ 'ECommerce::ReviewStatusApproved' | abpLocalization }}</option>
+              <option [value]="ReviewStatus.Rejected">{{ 'ECommerce::ReviewStatusRejected' | abpLocalization }}</option>
+            </select>
+          </div>
+        </div>
+        @if (loading()) {
+          <p class="text-muted mb-0">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>{{ 'ECommerce::Product' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::Rating' | abpLocalization }}</th>
+                  <th>Author</th>
+                  <th>Review</th>
+                  <th>{{ 'ECommerce::ReviewStatus' | abpLocalization }}</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of items(); track item.id) {
+                  <tr>
+                    <td>
+                      <a [routerLink]="['/catalog/product', item.productId]" target="_blank">{{ item.productId | slice:0:8 }}…</a>
+                    </td>
+                    <td>{{ item.rating }} ★</td>
+                    <td>{{ item.authorDisplayName || item.userId }}</td>
+                    <td class="text-truncate" style="max-width: 200px;" [attr.title]="item.reviewText ?? ''">
+                      {{ (item.reviewText || '—') | slice:0:60 }}{{ (item.reviewText?.length ?? 0) > 60 ? '…' : '' }}
+                    </td>
+                    <td>{{ statusLabel(item.status) | abpLocalization }}</td>
+                    <td>{{ formatDate(item.creationTime) }}</td>
+                    <td class="text-end">
+                      <div class="btn-group btn-group-sm">
+                        @if (item.status === ReviewStatus.Pending) {
+                          <button
+                            type="button"
+                            class="btn btn-outline-success"
+                            [disabled]="actionId() === item.id"
+                            (click)="approve(item)"
+                            [attr.title]="'ECommerce::ApproveReview' | abpLocalization"
+                          >
+                            @if (actionId() === item.id) {
+                              <span class="spinner-border spinner-border-sm"></span>
+                            } @else {
+                              <i class="fa fa-check"></i>
+                            }
+                          </button>
+                        }
+                        @if (item.status !== ReviewStatus.Rejected) {
+                          <button
+                            type="button"
+                            class="btn btn-outline-warning"
+                            [disabled]="actionId() === item.id"
+                            (click)="reject(item)"
+                            [attr.title]="'ECommerce::RejectReview' | abpLocalization"
+                          >
+                            <i class="fa fa-times"></i>
+                          </button>
+                        }
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          [disabled]="actionId() === item.id"
+                          (click)="deleteReview(item)"
+                          [attr.title]="'ECommerce::Delete' | abpLocalization"
+                        >
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (items().length === 0) {
+            <p class="text-muted mb-0">No reviews match the filter.</p>
+          }
+          @if (totalPages() > 1) {
+            <nav class="mt-2">
+              <ul class="pagination pagination-sm mb-0">
+                @for (p of [].constructor(totalPages()); track $index) {
+                  <li class="page-item" [class.active]="page() === $index">
+                    <button type="button" class="page-link" (click)="onPageChange($index)">{{ $index + 1 }}</button>
+                  </li>
+                }
+              </ul>
+            </nav>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

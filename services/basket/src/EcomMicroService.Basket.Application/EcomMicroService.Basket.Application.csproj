@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Basket</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="$(MicrosoftAspNetVersion)" />
+        <PackageReference Include="Volo.Abp.Mapperly" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Ddd.Application" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Basket.Application.Contracts\EcomMicroService.Basket.Application.Contracts.csproj" />
+        <ProjectReference Include="..\EcomMicroService.Basket.Domain\EcomMicroService.Basket.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

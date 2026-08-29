@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Payment</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Payment.Domain.Shared\EcomMicroService.Payment.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

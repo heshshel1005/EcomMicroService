@@ -1,0 +1,242 @@
+<div class="checkout-page">
+  <h1 class="mb-4">{{ 'ECommerce::Checkout' | abpLocalization }}</h1>
+
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+      <a routerLink="/cart" class="alert-link ms-2">{{ 'ECommerce::Cart' | abpLocalization }}</a>
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+  } @else if (summary(); as s) {
+    @if (!s.cart?.items?.length) {
+      <div class="alert alert-info" role="alert">
+        {{ 'ECommerce::CartEmpty' | abpLocalization }}
+        <a routerLink="/cart" class="alert-link ms-2">{{ 'ECommerce::Cart' | abpLocalization }}</a>
+        <a routerLink="/catalog" class="alert-link ms-2">{{ 'ECommerce::ContinueShopping' | abpLocalization }}</a>
+      </div>
+    } @else {
+    <form [formGroup]="form" (ngSubmit)="placeOrder()" class="row g-4">
+      <div class="col-lg-7">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::ContactInformation' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="contactEmail">{{ 'ECommerce::ContactEmail' | abpLocalization }} <span class="text-danger">*</span></label>
+              <input id="contactEmail" type="email" class="form-control" formControlName="contactEmail" />
+              @if (form.get('contactEmail')?.invalid && form.get('contactEmail')?.touched) {
+                <div class="invalid-feedback d-block">Valid email is required.</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="contactPhone">{{ 'ECommerce::ContactPhone' | abpLocalization }}</label>
+              <input id="contactPhone" type="text" class="form-control" formControlName="contactPhone" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="contactName">{{ 'ECommerce::ContactName' | abpLocalization }}</label>
+              <input id="contactName" type="text" class="form-control" formControlName="contactName" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::ShippingAddress' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="shippingStreet">{{ 'ECommerce::Street' | abpLocalization }} <span class="text-danger">*</span></label>
+              <input id="shippingStreet" type="text" class="form-control" formControlName="shippingStreet" />
+              @if (form.get('shippingStreet')?.invalid && form.get('shippingStreet')?.touched) {
+                <div class="invalid-feedback d-block">Street is required.</div>
+              }
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="shippingStreet2">{{ 'ECommerce::Street2' | abpLocalization }}</label>
+              <input id="shippingStreet2" type="text" class="form-control" formControlName="shippingStreet2" />
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="shippingCity">{{ 'ECommerce::City' | abpLocalization }}</label>
+                <input id="shippingCity" type="text" class="form-control" formControlName="shippingCity" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="shippingRegion">{{ 'ECommerce::Region' | abpLocalization }}</label>
+                <input id="shippingRegion" type="text" class="form-control" formControlName="shippingRegion" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="shippingPostalCode">{{ 'ECommerce::PostalCode' | abpLocalization }}</label>
+                <input id="shippingPostalCode" type="text" class="form-control" formControlName="shippingPostalCode" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label" for="shippingCountry">{{ 'ECommerce::Country' | abpLocalization }}</label>
+                <input id="shippingCountry" type="text" class="form-control" formControlName="shippingCountry" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="deliveryInstructions">{{ 'ECommerce::DeliveryInstructions' | abpLocalization }}</label>
+              <textarea id="deliveryInstructions" class="form-control" formControlName="deliveryInstructions" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::BillingAddress' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="form-check mb-3">
+              <input
+                id="billingSameAsShipping"
+                type="checkbox"
+                class="form-check-input"
+                formControlName="billingSameAsShipping"
+              />
+              <label class="form-check-label" for="billingSameAsShipping">{{ 'ECommerce::BillingSameAsShipping' | abpLocalization }}</label>
+            </div>
+            @if (!billingSameAsShipping) {
+              <div class="mb-3">
+                <label class="form-label" for="billingStreet">{{ 'ECommerce::Street' | abpLocalization }}</label>
+                <input id="billingStreet" type="text" class="form-control" formControlName="billingStreet" />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="billingStreet2">{{ 'ECommerce::Street2' | abpLocalization }}</label>
+                <input id="billingStreet2" type="text" class="form-control" formControlName="billingStreet2" />
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="billingCity">{{ 'ECommerce::City' | abpLocalization }}</label>
+                  <input id="billingCity" type="text" class="form-control" formControlName="billingCity" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="billingRegion">{{ 'ECommerce::Region' | abpLocalization }}</label>
+                  <input id="billingRegion" type="text" class="form-control" formControlName="billingRegion" />
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="billingPostalCode">{{ 'ECommerce::PostalCode' | abpLocalization }}</label>
+                  <input id="billingPostalCode" type="text" class="form-control" formControlName="billingPostalCode" />
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="billingCountry">{{ 'ECommerce::Country' | abpLocalization }}</label>
+                  <input id="billingCountry" type="text" class="form-control" formControlName="billingCountry" />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::ShippingMethod' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            @for (opt of s.shippingOptions; track opt.code) {
+              <div class="form-check">
+                <input
+                  type="radio"
+                  [id]="'ship-' + opt.code"
+                  name="shippingMethod"
+                  class="form-check-input"
+                  [checked]="selectedShippingCode() === opt.code"
+                  (change)="selectShipping(opt)"
+                />
+                <label [for]="'ship-' + opt.code" class="form-check-label">
+                  {{ opt.name }} — {{ opt.amount | number:'1.2-2' }} {{ 'ECommerce::Price' | abpLocalization }}
+                </label>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::CheckoutSummary' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label" for="couponCode">{{ 'ECommerce::CouponCode' | abpLocalization }}</label>
+              <div class="input-group">
+                <input
+                  id="couponCode"
+                  type="text"
+                  class="form-control"
+                  formControlName="couponCode"
+                  [placeholder]="'ECommerce::CouponCodePlaceholder' | abpLocalization"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="applyCoupon()"
+                  [disabled]="applyingCoupon()"
+                >
+                  @if (applyingCoupon()) {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  } @else {
+                    {{ 'ECommerce::Apply' | abpLocalization }}
+                  }
+                </button>
+              </div>
+              @if (summary()?.appliedCouponCode) {
+                <small class="text-success">{{ 'ECommerce::CouponApplied' | abpLocalization }}: {{ summary()?.appliedCouponCode }}</small>
+              }
+            </div>
+            <ul class="list-group list-group-flush mb-3">
+              @for (item of s.cart.items; track item.id) {
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                  <span>{{ item.productName }} × {{ item.quantity }}</span>
+                  <span>{{ ((item.unitPrice ?? 0) * item.quantity) | number:'1.2-2' }}</span>
+                </li>
+              }
+            </ul>
+            <hr />
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::SubTotal' | abpLocalization }}</span>
+              <span>{{ subTotal() | number:'1.2-2' }}</span>
+            </div>
+            @if (discountAmount() > 0) {
+              <div class="d-flex justify-content-between mb-2 text-success">
+                <span>{{ 'ECommerce::Discount' | abpLocalization }}</span>
+                <span>-{{ discountAmount() | number:'1.2-2' }}</span>
+              </div>
+            }
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::Shipping' | abpLocalization }}</span>
+              <span>{{ shippingAmount() | number:'1.2-2' }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::Tax' | abpLocalization }}</span>
+              <span>{{ taxAmount() | number:'1.2-2' }}</span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between fw-bold fs-5">
+              <span>{{ 'ECommerce::Total' | abpLocalization }}</span>
+              <span>{{ total() | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg w-100"
+          [disabled]="form.invalid || submitLoading()"
+        >
+          @if (submitLoading()) {
+            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          }
+          {{ 'ECommerce::PlaceOrder' | abpLocalization }}
+        </button>
+      </div>
+    </form>
+    }
+  }
+</div>

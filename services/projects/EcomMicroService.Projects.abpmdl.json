@@ -1,0 +1,79 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EcomMicroService.Projects.Domain.Shared": {
+      "path": "src/EcomMicroService.Projects.Domain.Shared/EcomMicroService.Projects.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.Domain": {
+      "path": "src/EcomMicroService.Projects.Domain/EcomMicroService.Projects.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.Application.Contracts": {
+      "path": "src/EcomMicroService.Projects.Application.Contracts/EcomMicroService.Projects.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.Application": {
+      "path": "src/EcomMicroService.Projects.Application/EcomMicroService.Projects.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.EntityFrameworkCore": {
+      "path": "src/EcomMicroService.Projects.EntityFrameworkCore/EcomMicroService.Projects.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.MongoDB": {
+      "path": "src/EcomMicroService.Projects.MongoDB/EcomMicroService.Projects.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.HttpApi": {
+      "path": "src/EcomMicroService.Projects.HttpApi/EcomMicroService.Projects.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.HttpApi.Client": {
+      "path": "src/EcomMicroService.Projects.HttpApi.Client/EcomMicroService.Projects.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Projects.TestBase": {
+      "path": "test/EcomMicroService.Projects.TestBase/EcomMicroService.Projects.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.EntityFrameworkCore.Tests": {
+      "path": "test/EcomMicroService.Projects.EntityFrameworkCore.Tests/EcomMicroService.Projects.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.MongoDB.Tests": {
+      "path": "test/EcomMicroService.Projects.MongoDB.Tests/EcomMicroService.Projects.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.Domain.Tests": {
+      "path": "test/EcomMicroService.Projects.Domain.Tests/EcomMicroService.Projects.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.Application.Tests": {
+      "path": "test/EcomMicroService.Projects.Application.Tests/EcomMicroService.Projects.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.HttpApi.Host": {
+      "path": "host/EcomMicroService.Projects.HttpApi.Host/EcomMicroService.Projects.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Projects.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EcomMicroService.Projects.HttpApi.Client.ConsoleTestApp/EcomMicroService.Projects.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Projects.IdentityServer": {
+      "path": "host/EcomMicroService.Projects.IdentityServer/EcomMicroService.Projects.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Projects.Host.Shared": {
+      "path": "host/EcomMicroService.Projects.Host.Shared/EcomMicroService.Projects.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

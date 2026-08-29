@@ -1,0 +1,98 @@
+<!-- Floating Premium Toast Notification -->
+<div class="custom-toast" [class.show]="successMessage">
+  <div class="toast-content">
+    <i class="fas fa-check-circle toast-icon"></i>
+    <span class="toast-message">{{ successMessage }}</span>
+  </div>
+</div>
+
+<div class="details-container">
+  <!-- Back navigation -->
+  <a routerLink="/catalog" class="btn-back">
+    <i class="fas fa-arrow-left"></i> Back to Products
+  </a>
+
+  <!-- Loading indicator -->
+  <div class="loader-container" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Retrieving product details...</p>
+  </div>
+
+  <!-- Main Details Section -->
+  <div class="details-card-glass" *ngIf="!loading && product">
+    <div class="row g-5">
+      <!-- Product Image Column -->
+      <div class="col-md-6">
+        <div class="image-showcase">
+          <span class="featured-badge" *ngIf="product.isFeatured">Featured Product</span>
+          <img [src]="product.imageUrl || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800'" 
+               alt="{{ product.name }}" 
+               class="showcase-img">
+        </div>
+      </div>
+
+      <!-- Product Information Column -->
+      <div class="col-md-6">
+        <div class="info-showcase">
+          <div class="meta-badge-row">
+            <span class="sku-badge">SKU: {{ product.sku }}</span>
+            <span class="stock-badge" [class.out-of-stock]="product.stockQuantity <= 0">
+              {{ product.stockQuantity > 0 ? product.stockQuantity + ' Units Available' : 'Out of Stock' }}
+            </span>
+          </div>
+
+          <h1 class="product-title">{{ product.name }}</h1>
+
+          <!-- Reviews summary -->
+          <div class="rating-stars mb-4">
+            <div class="stars">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star-half-alt text-warning"></i>
+            </div>
+            <span class="rating-score">4.5 Rating</span>
+            <span class="reviews-count">(128 reviews)</span>
+          </div>
+
+          <div class="price-box">
+            <span class="price-lbl">Special Price</span>
+            <span class="price-value">{{ product.price | currency:'USD' }}</span>
+          </div>
+
+          <div class="description-section mb-4">
+            <h5>Overview</h5>
+            <p>{{ product.description }}</p>
+          </div>
+
+          <!-- Purchase Controls -->
+          <div class="purchase-controls" *ngIf="product.stockQuantity > 0">
+            <div class="quantity-selector-group">
+              <span class="qty-lbl">Quantity</span>
+              <div class="qty-control-inner">
+                <button class="qty-btn" (click)="decrementQuantity()" [disabled]="quantity <= 1">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input type="number" class="qty-input" [(ngModel)]="quantity" readonly>
+                <button class="qty-btn" (click)="incrementQuantity()" [disabled]="quantity >= product.stockQuantity">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <button class="btn btn-add-detail-cart" (click)="addToCart()">
+              <i class="fas fa-shopping-cart"></i> Add {{ quantity }} to Cart
+            </button>
+          </div>
+
+          <div class="purchase-controls-out" *ngIf="product.stockQuantity <= 0">
+            <div class="out-of-stock-alert">
+              <i class="fas fa-exclamation-triangle"></i> Currently Out of Stock. Check back soon!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

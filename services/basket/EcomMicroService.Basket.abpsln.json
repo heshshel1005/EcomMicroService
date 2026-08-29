@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EcomMicroService.Basket": {
+      "path": "EcomMicroService.Basket.abpmdl.json"
+    }
+  }
+}

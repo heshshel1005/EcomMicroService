@@ -1,0 +1,79 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EcomMicroService.Catalog.Domain.Shared": {
+      "path": "src/EcomMicroService.Catalog.Domain.Shared/EcomMicroService.Catalog.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.Domain": {
+      "path": "src/EcomMicroService.Catalog.Domain/EcomMicroService.Catalog.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.Application.Contracts": {
+      "path": "src/EcomMicroService.Catalog.Application.Contracts/EcomMicroService.Catalog.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.Application": {
+      "path": "src/EcomMicroService.Catalog.Application/EcomMicroService.Catalog.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.EntityFrameworkCore": {
+      "path": "src/EcomMicroService.Catalog.EntityFrameworkCore/EcomMicroService.Catalog.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.MongoDB": {
+      "path": "src/EcomMicroService.Catalog.MongoDB/EcomMicroService.Catalog.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.HttpApi": {
+      "path": "src/EcomMicroService.Catalog.HttpApi/EcomMicroService.Catalog.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.HttpApi.Client": {
+      "path": "src/EcomMicroService.Catalog.HttpApi.Client/EcomMicroService.Catalog.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Catalog.TestBase": {
+      "path": "test/EcomMicroService.Catalog.TestBase/EcomMicroService.Catalog.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.EntityFrameworkCore.Tests": {
+      "path": "test/EcomMicroService.Catalog.EntityFrameworkCore.Tests/EcomMicroService.Catalog.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.MongoDB.Tests": {
+      "path": "test/EcomMicroService.Catalog.MongoDB.Tests/EcomMicroService.Catalog.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.Domain.Tests": {
+      "path": "test/EcomMicroService.Catalog.Domain.Tests/EcomMicroService.Catalog.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.Application.Tests": {
+      "path": "test/EcomMicroService.Catalog.Application.Tests/EcomMicroService.Catalog.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.HttpApi.Host": {
+      "path": "host/EcomMicroService.Catalog.HttpApi.Host/EcomMicroService.Catalog.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Catalog.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EcomMicroService.Catalog.HttpApi.Client.ConsoleTestApp/EcomMicroService.Catalog.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Catalog.IdentityServer": {
+      "path": "host/EcomMicroService.Catalog.IdentityServer/EcomMicroService.Catalog.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Catalog.Host.Shared": {
+      "path": "host/EcomMicroService.Catalog.Host.Shared/EcomMicroService.Catalog.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

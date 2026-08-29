@@ -1,0 +1,148 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0">
+          @if (isCreate()) {
+            {{ 'ECommerce::NewBrand' | abpLocalization }}
+          } @else {
+            {{ 'ECommerce::EditBrand' | abpLocalization }}
+          }
+        </h5>
+        <a
+          routerLink="/admin/catalog/brands"
+          class="btn btn-outline-secondary btn-sm"
+        >
+          <i class="fa fa-arrow-left me-1"></i>
+          {{ 'ECommerce::Brands' | abpLocalization }}
+        </a>
+      </div>
+      <div class="card-body">
+        @if (loading()) {
+          <p class="text-muted">
+            {{ 'ECommerce::Loading' | abpLocalization }}
+          </p>
+        } @else {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">
+                {{ 'ECommerce::BrandName' | abpLocalization }}
+              </label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                formControlName="name"
+              />
+              @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                <div class="invalid-feedback d-block">
+                  Name is required (max 256 characters).
+                </div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="slug" class="form-label">
+                {{ 'ECommerce::BrandSlug' | abpLocalization }}
+              </label>
+              <input
+                id="slug"
+                type="text"
+                class="form-control"
+                formControlName="slug"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">
+                {{ 'ECommerce::BrandDescription' | abpLocalization }}
+              </label>
+              <textarea
+                id="description"
+                class="form-control"
+                rows="3"
+                formControlName="description"
+              ></textarea>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                id="isActive"
+                type="checkbox"
+                class="form-check-input"
+                formControlName="isActive"
+              />
+              <label class="form-check-label" for="isActive">
+                {{ 'ECommerce::BrandIsActive' | abpLocalization }}
+              </label>
+            </div>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <label class="form-label mb-0">Translations</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" (click)="addTranslation()">+ Translation</button>
+              </div>
+              <div formArrayName="translations" class="d-flex flex-column gap-2">
+                @for (translation of translations.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="border rounded p-2">
+                    <div class="row g-2 align-items-end">
+                      <div class="col-md-3">
+                        <label class="form-label small">Language</label>
+                        <select class="form-select form-select-sm" formControlName="language">
+                          <option value="">-- Select language --</option>
+                          @for (lang of languages(); track lang.cultureName) {
+                            <option [value]="lang.cultureName">{{ lang.displayName }}</option>
+                          }
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label small">Name</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="name" />
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label small">Description</label>
+                        <input type="text" class="form-control form-control-sm" formControlName="description" />
+                      </div>
+                      <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger btn-sm w-100" (click)="removeTranslation(i)">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+              @if (hasDuplicateLanguages()) {
+                <div class="text-danger small mt-2">Duplicate translation languages are not allowed.</div>
+              }
+              @if (hasMissingDefaultLanguageTranslation()) {
+                <div class="text-danger small mt-2">
+                  A translation for the default language ({{ defaultLanguage() }}) is required.
+                </div>
+              }
+            </div>
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="form.invalid || hasDuplicateLanguages() || hasMissingDefaultLanguageTranslation() || saving()"
+              >
+                @if (saving()) {
+                  <span class="spinner-border spinner-border-sm me-1"></span>
+                }
+                {{
+                  isCreate()
+                    ? ('ECommerce::Create' | abpLocalization)
+                    : ('ECommerce::Save' | abpLocalization)
+                }}
+              </button>
+              <a
+                routerLink="/admin/catalog/brands"
+                class="btn btn-outline-secondary"
+              >
+                {{ 'ECommerce::Cancel' | abpLocalization }}
+              </a>
+            </div>
+          </form>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+

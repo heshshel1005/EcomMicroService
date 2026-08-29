@@ -1,0 +1,131 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h5 class="mb-0">{{ 'ECommerce::Products' | abpLocalization }}</h5>
+        <a routerLink="/admin/catalog/products/create" class="btn btn-primary btn-sm">
+          <i class="fa fa-plus me-1"></i>
+          {{ 'ECommerce::NewProduct' | abpLocalization }}
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="row g-2 mb-3">
+          <div class="col-auto">
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [placeholder]="'ECommerce::ProductName' | abpLocalization"
+              [value]="filter()"
+              (input)="filter.set($any($event.target).value); onFilterChange()"
+            />
+          </div>
+          <div class="col-auto">
+            <select
+              class="form-select form-select-sm"
+              [value]="categoryId() ?? ''"
+              (change)="categoryId.set($any($event.target).value || null); onFilterChange()"
+            >
+              <option value="">— {{ 'ECommerce::None' | abpLocalization }} —</option>
+              @for (c of categories(); track c.id) {
+                <option [value]="c.id">{{ c.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-auto">
+            <select
+              class="form-select form-select-sm"
+              [value]="brandId() ?? ''"
+              (change)="brandId.set($any($event.target).value || null); onFilterChange()"
+            >
+              <option value="">— {{ 'ECommerce::Brand' | abpLocalization }} —</option>
+              @for (b of brands(); track b.id) {
+                <option [value]="b.id">{{ b.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+        @if (loading()) {
+          <p class="text-muted mb-0">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-sm table-hover">
+              <thead>
+                <tr>
+                  <th>{{ 'ECommerce::ProductNumber' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::ProductName' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::Brand' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::ProductCategory' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::Model' | abpLocalization }}</th>
+                  <th>Product Type</th>
+                  <th>Attributes</th>
+                  <th>{{ 'ECommerce::Price' | abpLocalization }}</th>
+                  <th>{{ 'ECommerce::ProductPublished' | abpLocalization }}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of items(); track item.id) {
+                  <tr>
+                    <td>{{ item.productNumber }}</td>
+                    <td>
+                      <a [routerLink]="['/admin/catalog/products/edit', item.id]">{{ item.name }}</a>
+                    </td>
+                    <td>{{ item.brandName ?? '—' }}</td>
+                    <td>{{ item.categoryName ?? '—' }}</td>
+                    <td>{{ item.modelName ?? '—' }}</td>
+                    <td>{{ item.productTypeName ?? '—' }}</td>
+                    <td>
+                      <span class="badge rounded-pill" [class]="getCompletenessClass(item)">
+                        {{ getCompletenessLabel(item) }}
+                      </span>
+                    </td>
+                    <td>{{ item.priceFrom !== null ? (item.priceFrom | number:'1.2-2') : '—' }}</td>
+                    <td>{{ item.isPublished ? '✓' : '—' }}</td>
+                    <td class="text-end">
+                      <div class="btn-group btn-group-sm">
+                        <a
+                          [routerLink]="['/admin/catalog/products/edit', item.id]"
+                          class="btn btn-outline-primary"
+                          [attr.title]="'ECommerce::EditProduct' | abpLocalization"
+                        >
+                          <i class="fa fa-edit"></i>
+                        </a>
+                        <button
+                          type="button"
+                          class="btn btn-outline-danger"
+                          [disabled]="deletingId() === item.id"
+                          [attr.title]="'ECommerce::Delete' | abpLocalization"
+                          (click)="deleteProduct(item)"
+                        >
+                          @if (deletingId() === item.id) {
+                            <span class="spinner-border spinner-border-sm"></span>
+                          } @else {
+                            <i class="fa fa-trash"></i>
+                          }
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (items().length === 0) {
+            <p class="text-muted mb-0">{{ 'ECommerce::NoProducts' | abpLocalization }}</p>
+          }
+          @if (totalPages() > 1) {
+            <nav class="mt-2">
+              <ul class="pagination pagination-sm mb-0">
+                @for (p of [].constructor(totalPages()); track $index) {
+                  <li class="page-item" [class.active]="page() === $index">
+                    <button type="button" class="page-link" (click)="onPageChange($index)">{{ $index + 1 }}</button>
+                  </li>
+                }
+              </ul>
+            </nav>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

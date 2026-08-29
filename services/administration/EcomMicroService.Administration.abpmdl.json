@@ -1,0 +1,79 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EcomMicroService.Administration.Domain.Shared": {
+      "path": "src/EcomMicroService.Administration.Domain.Shared/EcomMicroService.Administration.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.Domain": {
+      "path": "src/EcomMicroService.Administration.Domain/EcomMicroService.Administration.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.Application.Contracts": {
+      "path": "src/EcomMicroService.Administration.Application.Contracts/EcomMicroService.Administration.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.Application": {
+      "path": "src/EcomMicroService.Administration.Application/EcomMicroService.Administration.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.EntityFrameworkCore": {
+      "path": "src/EcomMicroService.Administration.EntityFrameworkCore/EcomMicroService.Administration.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.MongoDB": {
+      "path": "src/EcomMicroService.Administration.MongoDB/EcomMicroService.Administration.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.HttpApi": {
+      "path": "src/EcomMicroService.Administration.HttpApi/EcomMicroService.Administration.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.HttpApi.Client": {
+      "path": "src/EcomMicroService.Administration.HttpApi.Client/EcomMicroService.Administration.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Administration.TestBase": {
+      "path": "test/EcomMicroService.Administration.TestBase/EcomMicroService.Administration.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.EntityFrameworkCore.Tests": {
+      "path": "test/EcomMicroService.Administration.EntityFrameworkCore.Tests/EcomMicroService.Administration.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.MongoDB.Tests": {
+      "path": "test/EcomMicroService.Administration.MongoDB.Tests/EcomMicroService.Administration.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.Domain.Tests": {
+      "path": "test/EcomMicroService.Administration.Domain.Tests/EcomMicroService.Administration.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.Application.Tests": {
+      "path": "test/EcomMicroService.Administration.Application.Tests/EcomMicroService.Administration.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.HttpApi.Host": {
+      "path": "host/EcomMicroService.Administration.HttpApi.Host/EcomMicroService.Administration.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Administration.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EcomMicroService.Administration.HttpApi.Client.ConsoleTestApp/EcomMicroService.Administration.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Administration.IdentityServer": {
+      "path": "host/EcomMicroService.Administration.IdentityServer/EcomMicroService.Administration.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Administration.Host.Shared": {
+      "path": "host/EcomMicroService.Administration.Host.Shared/EcomMicroService.Administration.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcomMicroService - Solution Structure Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --panel-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-glow: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --accent-color: #6366f1;
+            --accent-secondary: #a855f7;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --folder-color: #f59e0b;
+            --file-color: #3b82f6;
+            --csharp-color: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Sidebar Tree View */
+        .tree-sidebar {
+            width: 40%;
+            border-right: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--accent-glow);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .tree-container {
+            flex-grow: 1;
+            font-size: 15px;
+            user-select: none;
+        }
+
+        .tree-node {
+            margin-left: 16px;
+            position: relative;
+        }
+
+        .tree-node::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tree-node-content {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 2px;
+        }
+
+        .tree-node-content:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(4px);
+        }
+
+        .tree-node-content.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 5px;
+        }
+
+        .icon {
+            margin-right: 8px;
+            font-size: 16px;
+            display: inline-block;
+            width: 18px;
+            text-align: center;
+        }
+
+        .folder-icon { color: var(--folder-color); }
+        .file-icon { color: var(--file-color); }
+        .csharp-icon { color: var(--csharp-color); }
+
+        .caret {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-right: 4px;
+            color: var(--text-muted);
+        }
+
+        .caret.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .node-name {
+            font-weight: 400;
+        }
+
+        .nested {
+            display: block;
+        }
+
+        .nested.hidden {
+            display: none;
+        }
+
+        /* Details Panel */
+        .details-panel {
+            width: 60%;
+            background: rgba(10, 15, 28, 0.4);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            justify-content: center;
+        }
+
+        .details-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            max-width: 800px;
+            align-self: center;
+            width: 100%;
+        }
+
+        .details-card.fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .details-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .details-title-container h2 {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .details-type-badge {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #d8b4fe;
+            display: inline-block;
+        }
+
+        .details-body {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        .details-section {
+            margin-bottom: 24px;
+        }
+
+        .details-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .details-section h3::before {
+            content: '';
+            display: inline-block;
+            width: 6px;
+            height: 18px;
+            background: var(--accent-glow);
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .details-section p {
+            color: #d1d5db;
+        }
+
+        .details-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .details-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .details-list li::before {
+            content: '✦';
+            color: var(--accent-color);
+            margin-right: 10px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Tree View Sidebar -->
+    <div class="tree-sidebar">
+        <div class="header">
+            <h1>EcomMicroService</h1>
+            <p>Interactive Solution Directory Explorer</p>
+        </div>
+
+        <div class="tree-container">
+            <!-- Root node: EcomMicroService -->
+            <div class="tree-node" style="margin-left: 0;">
+                <div class="tree-node-content active" onclick="showDetails('root', this)">
+                    <span class="caret">▼</span>
+                    <span class="icon folder-icon">📁</span>
+                    <span class="node-name" style="font-weight: 600;">EcomMicroService (Root)</span>
+                </div>
+                
+                <div class="nested">
+                    <!-- apps -->
+                    <div class="tree-node">
+                        <div class="tree-node-content" onclick="showDetails('apps', this)">
+                            <span class="caret">▼</span>
+                            <span class="icon folder-icon">📁</span>
+                            <span class="node-name">apps</span>
+                        </div>
+                        <div class="nested">
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('apphost', this)">
+                                    <span class="icon csharp-icon">⚙️</span>
+                                    <span class="node-name">EcomMicroService.AppHost</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('authserver', this)">
+                                    <span class="icon csharp-icon">🔑</span>
+                                    <span class="node-name">EcomMicroService.AuthServer</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('webapp', this)">
+                                    <span class="icon csharp-icon">🌐</span>
+                                    <span class="node-name">EcomMicroService.WebApp</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('angular', this)">
+                                    <span class="caret">▼</span>
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">angular</span>
+                                </div>
+                                <div class="nested">
+                                    <div class="tree-node">
+                                        <div class="tree-node-content" onclick="showDetails('shell', this)">
+                                            <span class="icon file-icon">🅰️</span>
+                                            <span class="node-name">shell (Host Shell)</span>
+                                        </div>
+                                    </div>
+                                    <div class="tree-node">
+                                        <div class="tree-node-content" onclick="showDetails('catalog_mfe', this)">
+                                            <span class="icon file-icon">📦</span>
+                                            <span class="node-name">catalog-mfe (Remote)</span>
+                                        </div>
+                                    </div>
+                                    <div class="tree-node">
+                                        <div class="tree-node-content" onclick="showDetails('ordering_mfe', this)">
+                                            <span class="icon file-icon">🛒</span>
+                                            <span class="node-name">ordering-mfe (Remote)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- gateway -->
+                    <div class="tree-node">
+                        <div class="tree-node-content" onclick="showDetails('gateway', this)">
+                            <span class="caret">▼</span>
+                            <span class="icon folder-icon">📁</span>
+                            <span class="node-name">gateway</span>
+                        </div>
+                        <div class="nested">
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('gateway_project', this)">
+                                    <span class="icon csharp-icon">🌉</span>
+                                    <span class="node-name">EcomMicroService.Gateway</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- services -->
+                    <div class="tree-node">
+                        <div class="tree-node-content" onclick="showDetails('services', this)">
+                            <span class="caret">▼</span>
+                            <span class="icon folder-icon">📁</span>
+                            <span class="node-name">services</span>
+                        </div>
+                        <div class="nested">
+                            <!-- administration -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('administration', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">administration</span>
+                                </div>
+                            </div>
+                            <!-- saas -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('saas', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">saas</span>
+                                </div>
+                            </div>
+                            <!-- identity -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('identity', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">identity</span>
+                                </div>
+                            </div>
+                            <!-- catalog -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('catalog', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">catalog</span>
+                                </div>
+                            </div>
+                            <!-- basket -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('basket', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">basket</span>
+                                </div>
+                            </div>
+                            <!-- ordering -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('ordering', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">ordering</span>
+                                </div>
+                            </div>
+                            <!-- projects -->
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('projects', this)">
+                                    <span class="icon folder-icon">📁</span>
+                                    <span class="node-name">projects</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- shared -->
+                    <div class="tree-node">
+                        <div class="tree-node-content" onclick="showDetails('shared', this)">
+                            <span class="caret">▼</span>
+                            <span class="icon folder-icon">📁</span>
+                            <span class="node-name">shared</span>
+                        </div>
+                        <div class="nested">
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('dbmigrator', this)">
+                                    <span class="icon csharp-icon">🔄</span>
+                                    <span class="node-name">EcomMicroService.DbMigrator</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('hosting_shared', this)">
+                                    <span class="icon csharp-icon">📦</span>
+                                    <span class="node-name">EcomMicroService.Hosting.Shared</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('microservice_shared', this)">
+                                    <span class="icon csharp-icon">📦</span>
+                                    <span class="node-name">EcomMicroService.Microservice.Shared</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('service_defaults', this)">
+                                    <span class="icon csharp-icon">⚙️</span>
+                                    <span class="node-name">EcomMicroService.ServiceDefaults</span>
+                                </div>
+                            </div>
+                            <div class="tree-node">
+                                <div class="tree-node-content" onclick="showDetails('shared_lib', this)">
+                                    <span class="icon csharp-icon">📦</span>
+                                    <span class="node-name">EcomMicroService.Shared</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Display Panel -->
+    <div class="details-panel">
+        <div id="detailsCard" class="details-card">
+            <!-- Dynamic Content -->
+        </div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        root: {
+            title: "EcomMicroService (Root)",
+            type: "Solution Workspace",
+            desc: "The primary workspace containing the entire e-commerce microservice ecosystem. Orchestrated by .NET Aspire and built on top of the ABP framework.",
+            details: [
+                "Contains service definitions, gateways, client projects, and shared modules.",
+                "Orchestrates microservices locally using containers (PostgreSQL, Redis, RabbitMQ, Seq).",
+                "Includes database migrations and seeding automation script assemblies."
+            ]
+        },
+        apps: {
+            title: "apps/",
+            type: "Folder",
+            desc: "Holds the client interfaces, web portals, and host coordinators for running the platform.",
+            details: [
+                "Hosts the Angular frontend Module Federation workspace.",
+                "Contains the .NET Aspire Orchestrator.",
+                "Contains the central Auth Server."
+            ]
+        },
+        apphost: {
+            title: "EcomMicroService.AppHost",
+            type: ".NET Project (Aspire Orchestrator)",
+            desc: "The coordinator for local execution and configuration injection using .NET Aspire.",
+            details: [
+                "Registers container resources (Postgres, Redis, RabbitMQ, Seq).",
+                "Provides configuration/dependency injection links (connection strings) for all APIs.",
+                "Serves as the launch coordinator for multi-project execution."
+            ]
+        },
+        authserver: {
+            title: "EcomMicroService.AuthServer",
+            type: "ASP.NET Core Web App (OIDC Provider)",
+            desc: "The authentication center of the application using OpenIddict and the ABP Account UI framework.",
+            details: [
+                "Responsible for token issuance, validation, and consent checks.",
+                "Implements login, register, and tenant selection Razor UI forms.",
+                "Validates security claims and issues JWT tokens to the client applications."
+            ]
+        },
+        webapp: {
+            title: "EcomMicroService.WebApp",
+            type: "ASP.NET Core Blazor Web App",
+            desc: "Blazor-based frontend portal designed to access gateways and services.",
+            details: [
+                "Connects to the API Gateway to consume APIs.",
+                "Provides client layouts and authentication callbacks."
+            ]
+        },
+        angular: {
+            title: "angular/",
+            type: "Angular Workspace",
+            desc: "The frontend client workspace configured for Angular Micro-Frontends using Webpack Module Federation.",
+            details: [
+                "Splits logic into independent, lazily-loaded modules called micro-frontends (MFEs).",
+                "Operates a central shell host that dynamically loads and mounts catalog and ordering features."
+            ]
+        },
+        shell: {
+            title: "shell (Host Shell)",
+            type: "Angular MFE Host",
+            desc: "The main container app that serves the navbar, layout, tenant-switching state, and authorization logic.",
+            details: [
+                "Listens on port 4200.",
+                "Configured to dynamically pull modules from remote ports 4201 (Catalog) and 4202 (Ordering).",
+                "Acts as the core routing framework."
+            ]
+        },
+        catalog_mfe: {
+            title: "catalog-mfe",
+            type: "Angular MFE Remote",
+            desc: "Remote micro-frontend that encapsulates all product browsing features.",
+            details: [
+                "Listens on port 4201.",
+                "Provides category, brand, and model filters.",
+                "Displays detailed products listings and product details cards."
+            ]
+        },
+        ordering_mfe: {
+            title: "ordering-mfe",
+            type: "Angular MFE Remote",
+            desc: "Remote micro-frontend managing the cart layout and checkout processes.",
+            details: [
+                "Listens on port 4202.",
+                "Renders shipping forms, checkout summary calculations, and payment confirmations.",
+                "Saves transient local storage details across remote boundaries."
+            ]
+        },
+        gateway: {
+            title: "gateway/",
+            type: "Folder",
+            desc: "Contains reverse proxy definitions and routing gateways.",
+            details: [
+                "Configures network endpoints.",
+                "Intercepts requests before they reach core backend services."
+            ]
+        },
+        gateway_project: {
+            title: "EcomMicroService.Gateway",
+            type: "ASP.NET Core (YARP API Gateway)",
+            desc: "The single API gateway built on top of YARP (Yet Another Reverse Proxy) that maps paths to individual microservices.",
+            details: [
+                "Binds to port 7500.",
+                "Routes routes like /api/catalog/** to Catalog API and /api/identity/** to Identity API.",
+                "Configures global CORS rules so browsers can safely perform API requests from the Angular app."
+            ]
+        },
+        services: {
+            title: "services/",
+            type: "Folder",
+            desc: "The core domain layer containing all DDD e-commerce microservices.",
+            details: [
+                "Each service directory contains its domain, application, and database EF Core assemblies.",
+                "Hosts run independently on designated ports.",
+                "Services interact asynchronously using the RabbitMQ Distributed Event Bus."
+            ]
+        },
+        administration: {
+            title: "administration/",
+            type: "ABP Microservice",
+            desc: "Manages system configurations, dynamic permissions, settings, audit records, and feature flags.",
+            details: [
+                "Serves as the single authority for database configuration saving on startup.",
+                "Maps settings databases connection strings.",
+                "Exposes features and logs audits."
+            ]
+        },
+        saas: {
+            title: "saas/",
+            type: "ABP Microservice",
+            desc: "Handles e-commerce Multi-Tenancy database settings, tenant creation, and subscription tiers.",
+            details: [
+                "Fires TenantCreatedEto distributed event when a new tenant is created.",
+                "Hosts the tenant management controller tables (AbpTenants).",
+                "Maps connection configurations for separate databases per tenant."
+            ]
+        },
+        identity: {
+            title: "identity/",
+            type: "ABP Microservice",
+            desc: "Handles user profiles, role assignments, permissions checks, and security logging.",
+            details: [
+                "Listens to TenantCreatedEto to seed default tenant administrators.",
+                "Keeps records in EcomMicroServiceIdentityServiceDb.",
+                "Provides user roles endpoints."
+            ]
+        },
+        catalog: {
+            title: "catalog/",
+            type: "ABP Microservice",
+            desc: "Implements all catalog-related resources (Products, Categories, Brands, and Models).",
+            details: [
+                "Exposes REST endpoints to query and filter catalog items.",
+                "Configures EF Core PostgreSQL database mapping for catalogs.",
+                "Operates on port 7005."
+            ]
+        },
+        basket: {
+            title: "basket/",
+            type: "ABP Microservice",
+            desc: "Manages temporary shopping carts for active users.",
+            details: [
+                "Stores transient cart data directly in Redis for fast caching.",
+                "Binds to port 7006."
+            ]
+        },
+        ordering: {
+            title: "ordering/",
+            type: "ABP Microservice",
+            desc: "Processes payment submissions and order record creation.",
+            details: [
+                "Validates cart lists, shipping options, and coordinates updates.",
+                "Runs on port 7007."
+            ]
+        },
+        projects: {
+            title: "projects/",
+            type: "ABP Microservice",
+            desc: "A generic projects and tasks microservice template setup.",
+            details: [
+                "Binds to port 7004.",
+                "Includes default domain and application layers."
+            ]
+        },
+        shared: {
+            title: "shared/",
+            type: "Folder",
+            desc: "Houses shared resources, service defaults, configurations, and migration tools.",
+            details: [
+                "Contains DbMigrator application.",
+                "Provides common hosting extensions and shared defaults."
+            ]
+        },
+        dbmigrator: {
+            title: "EcomMicroService.DbMigrator",
+            type: "Console App",
+            desc: "Automates database schema migrations and initial seeding (default admin user, clients, permissions) for all service databases.",
+            details: [
+                "Executed on startup or during deployments.",
+                "Applies PostgreSQL EF Core migrations sequentially."
+            ]
+        },
+        hosting_shared: {
+            title: "EcomMicroService.Hosting.Shared",
+            type: "Class Library",
+            desc: "Provides shared hosting settings for ASP.NET Core web host modules.",
+            details: [
+                "Encapsulates startup configuration rules.",
+                "Shares server settings and logging parameters."
+            ]
+        },
+        microservice_shared: {
+            title: "EcomMicroService.Microservice.Shared",
+            type: "Class Library",
+            desc: "Houses microservice middleware configs, authentication JWT bearer setups, Swagger filters, and global cache overrides.",
+            details: [
+                "Sets up unified JWT authorization validations.",
+                "Configures Swagger OAuth parameters.",
+                "Enforces shared cache behaviors."
+            ]
+        },
+        service_defaults: {
+            title: "EcomMicroService.ServiceDefaults",
+            type: "Class Library",
+            desc: "Provides Aspire defaults, configuring health checks, HttpClient resilience, and OpenTelemetry logging metrics.",
+            details: [
+                "Configures tracer exporters.",
+                "Maps standard resilience handlers.",
+                "Adds /health and /alive endpoints."
+            ]
+        },
+        shared_lib: {
+            title: "EcomMicroService.Shared",
+            type: "Class Library",
+            desc: "Global shared library containing system-wide constants, static strings, and names.",
+            details: [
+                "Defines EcomMicroServiceNames constants.",
+                "Provides global extension methods and DTO definitions."
+            ]
+        }
+    };
+
+    function showDetails(key, element) {
+        // Remove active class from previous node
+        const activeNode = document.querySelector('.tree-node-content.active');
+        if (activeNode) {
+            activeNode.classList.remove('active');
+        }
+        
+        // Highlight current node
+        element.classList.add('active');
+
+        const card = document.getElementById('detailsCard');
+        const info = data[key];
+
+        // Animate detail change
+        card.classList.remove('fade-in');
+        void card.offsetWidth; // trigger reflow to reset animation
+        card.classList.add('fade-in');
+
+        let detailsHTML = info.details.map(d => `<li>${d}</li>`).join('');
+
+        card.innerHTML = `
+            <div class="details-header">
+                <div class="details-title-container">
+                    <span class="details-type-badge">${info.type}</span>
+                    <h2>${info.title}</h2>
+                </div>
+            </div>
+            <div class="details-body">
+                <div class="details-section">
+                    <h3>Overview</h3>
+                    <p>${info.desc}</p>
+                </div>
+                <div class="details-section">
+                    <h3>Key Highlights & Responsibilities</h3>
+                    <ul class="details-list">
+                        ${detailsHTML}
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    // Toggle folders caret
+    document.querySelectorAll('.caret').forEach(caret => {
+        caret.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const parent = caret.parentElement.parentElement;
+            const nested = parent.querySelector('.nested');
+            if (nested) {
+                nested.classList.toggle('hidden');
+                caret.classList.toggle('collapsed');
+            }
+        });
+    });
+
+    // Load root details initially
+    showDetails('root', document.querySelector('.tree-node-content.active'));
+</script>
+</body>
+</html>

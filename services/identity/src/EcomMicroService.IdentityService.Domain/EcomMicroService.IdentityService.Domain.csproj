@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.IdentityService</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="OpenIddict.Abstractions" Version="$(OpenIddictAbstractionsVersion)" />
+        <PackageReference Include="Volo.Abp.Ddd.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Identity.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.OpenIddict.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.IdentityService.Domain.Shared\EcomMicroService.IdentityService.Domain.Shared.csproj" />
+    </ItemGroup></Project>

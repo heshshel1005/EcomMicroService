@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Administration</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.AuditLogging.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.FeatureManagement.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Domain.OpenIddict" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.PermissionManagement.Domain.Identity" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.SettingManagement.Domain" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Administration.Domain.Shared\EcomMicroService.Administration.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

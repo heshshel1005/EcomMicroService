@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Marketing</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.AspNetCore.Mvc" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Marketing.Application.Contracts\EcomMicroService.Marketing.Application.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>

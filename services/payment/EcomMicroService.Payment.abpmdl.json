@@ -1,0 +1,79 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "EcomMicroService.Payment.Domain.Shared": {
+      "path": "src/EcomMicroService.Payment.Domain.Shared/EcomMicroService.Payment.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.Domain": {
+      "path": "src/EcomMicroService.Payment.Domain/EcomMicroService.Payment.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.Application.Contracts": {
+      "path": "src/EcomMicroService.Payment.Application.Contracts/EcomMicroService.Payment.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.Application": {
+      "path": "src/EcomMicroService.Payment.Application/EcomMicroService.Payment.Application.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.EntityFrameworkCore": {
+      "path": "src/EcomMicroService.Payment.EntityFrameworkCore/EcomMicroService.Payment.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.MongoDB": {
+      "path": "src/EcomMicroService.Payment.MongoDB/EcomMicroService.Payment.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.HttpApi": {
+      "path": "src/EcomMicroService.Payment.HttpApi/EcomMicroService.Payment.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.HttpApi.Client": {
+      "path": "src/EcomMicroService.Payment.HttpApi.Client/EcomMicroService.Payment.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "EcomMicroService.Payment.TestBase": {
+      "path": "test/EcomMicroService.Payment.TestBase/EcomMicroService.Payment.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.EntityFrameworkCore.Tests": {
+      "path": "test/EcomMicroService.Payment.EntityFrameworkCore.Tests/EcomMicroService.Payment.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.MongoDB.Tests": {
+      "path": "test/EcomMicroService.Payment.MongoDB.Tests/EcomMicroService.Payment.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.Domain.Tests": {
+      "path": "test/EcomMicroService.Payment.Domain.Tests/EcomMicroService.Payment.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.Application.Tests": {
+      "path": "test/EcomMicroService.Payment.Application.Tests/EcomMicroService.Payment.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.HttpApi.Host": {
+      "path": "host/EcomMicroService.Payment.HttpApi.Host/EcomMicroService.Payment.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Payment.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/EcomMicroService.Payment.HttpApi.Client.ConsoleTestApp/EcomMicroService.Payment.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "EcomMicroService.Payment.IdentityServer": {
+      "path": "host/EcomMicroService.Payment.IdentityServer/EcomMicroService.Payment.IdentityServer.abppkg.json",
+      "folder": "host"
+    },
+    "EcomMicroService.Payment.Host.Shared": {
+      "path": "host/EcomMicroService.Payment.Host.Shared/EcomMicroService.Payment.Host.Shared.abppkg.json",
+      "folder": "host"
+    }
+  }
+}

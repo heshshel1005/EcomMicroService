@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.SaaS</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Application.Contracts" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Authorization" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.TenantManagement.Application.Contracts" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\..\..\administration\src\EcomMicroService.Administration.Application.Contracts\EcomMicroService.Administration.Application.Contracts.csproj" />
+        <ProjectReference Include="..\EcomMicroService.SaaS.Domain.Shared\EcomMicroService.SaaS.Domain.Shared.csproj" />
+    </ItemGroup></Project>

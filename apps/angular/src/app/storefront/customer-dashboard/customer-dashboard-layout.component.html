@@ -1,0 +1,24 @@
+<div class="customer-dashboard">
+  <h2 class="mb-4">{{ 'ECommerce::CustomerDashboard' | abpLocalization }}</h2>
+  <div class="row">
+    <aside class="col-md-3 mb-4 mb-md-0">
+      <nav class="nav flex-column border rounded p-2">
+        <a routerLink="/my-account" routerLinkActive="active" class="nav-link" [routerLinkActiveOptions]="{ exact: true }">
+          {{ 'ECommerce::CustomerDashboardOverview' | abpLocalization }}
+        </a>
+        <a routerLink="/my-account/orders" routerLinkActive="active" class="nav-link">
+          {{ 'ECommerce::OrderHistory' | abpLocalization }}
+        </a>
+        <a routerLink="/my-account/profile" routerLinkActive="active" class="nav-link">
+          {{ 'ECommerce::Profile' | abpLocalization }}
+        </a>
+        <a routerLink="/my-account/wishlist" routerLinkActive="active" class="nav-link">
+          {{ 'ECommerce::Wishlist' | abpLocalization }}
+        </a>
+      </nav>
+    </aside>
+    <div class="col-md-9">
+      <router-outlet />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Blazorise.Bootstrap5" Version="$(BlazoriseVersion)" />
+        <PackageReference Include="Blazorise.Components" Version="$(BlazoriseVersion)" />
+        <PackageReference Include="Blazorise.DataGrid" Version="$(BlazoriseVersion)" />
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="$(BlazoriseVersion)" />
+        <PackageReference Include="Blazorise.Snackbar" Version="$(BlazoriseVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="$(MicrosoftAspNetVersion)" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="$(MicrosoftAspNetVersion)" />
+        <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Components.WebAssembly.LeptonXLiteTheme" Version="$(LeptonXLiteVersion)" />
+        <PackageReference Include="Volo.Abp.Autofac.WebAssembly" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.Identity.Blazor.WebAssembly" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.SettingManagement.Blazor.WebAssembly" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.TenantManagement.Blazor.WebAssembly" Version="$(AbpVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\EcomMicroService.Shared\EcomMicroService.Shared.csproj" />
+        <ProjectReference Include="..\EcomMicroService.WebApp.Domain.Shared\EcomMicroService.WebApp.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

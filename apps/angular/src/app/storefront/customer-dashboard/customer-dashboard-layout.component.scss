@@ -1,0 +1,7 @@
+.customer-dashboard {
+  .nav-link.active {
+    font-weight: 600;
+    background: var(--lpx-brand-bg-soft, rgba(13, 110, 253, 0.1));
+    color: var(--lpx-brand, #0d6efd);
+  }
+}

@@ -1,0 +1,122 @@
+<div class="payment-page">
+  <h1 class="mb-4">{{ 'ECommerce::Payment' | abpLocalization }}</h1>
+
+  @if (error()) {
+    <div class="alert alert-danger" role="alert">
+      {{ error() }}
+      @if (!isAuthenticated()) {
+        <a routerLink="/account/login" [queryParams]="{ returnUrl: '/checkout/payment?orderId=' + orderId() }" class="alert-link ms-2">
+          {{ 'AbpAccount::Login' | abpLocalization }}
+        </a>
+      } @else {
+        <a routerLink="/checkout" class="alert-link ms-2">{{ 'ECommerce::Checkout' | abpLocalization }}</a>
+      }
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+  } @else if (order(); as o) {
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5 class="mb-0">{{ 'ECommerce::OrderSummary' | abpLocalization }}</h5>
+          </div>
+          <div class="card-body">
+            <p class="mb-2"><strong>{{ 'ECommerce::Order' | abpLocalization }} #</strong> {{ o.id }}</p>
+            <hr />
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::SubTotal' | abpLocalization }}</span>
+              <span>{{ o.subTotal | number:'1.2-2' }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::Shipping' | abpLocalization }}</span>
+              <span>{{ o.shippingAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ 'ECommerce::Tax' | abpLocalization }}</span>
+              <span>{{ o.taxAmount | number:'1.2-2' }}</span>
+            </div>
+            <hr />
+            <div class="d-flex justify-content-between fw-bold fs-5">
+              <span>{{ 'ECommerce::Total' | abpLocalization }}</span>
+              <span>{{ o.total | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        @if (!selectedGateway()) {
+          <div class="card mb-4">
+            <div class="card-header">
+              <h5 class="mb-0">{{ 'ECommerce::SelectPaymentMethod' | abpLocalization }}</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex flex-column gap-2">
+                @for (gw of gateways(); track gw.name) {
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary btn-lg text-start d-flex align-items-center"
+                    (click)="selectGateway(gw)"
+                  >
+                    <span class="me-2">{{ gw.displayName }}</span>
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">{{ selectedGateway()?.displayName }}</h5>
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="selectedGateway.set(null)">
+                {{ 'ECommerce::Change' | abpLocalization }}
+              </button>
+            </div>
+            <div class="card-body">
+              @if (isCod()) {
+                @if (confirmLoading()) {
+                  <p class="text-muted mb-0">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ 'ECommerce::Processing' | abpLocalization }}...
+                  </p>
+                }
+              }
+              @if (isPaymob()) {
+                @if (intentLoading()) {
+                  <p class="text-muted mb-0">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ 'ECommerce::Loading' | abpLocalization }}...
+                  </p>
+                } @else if (paymobIframeUrl(); as url) {
+                  <p class="small text-muted mb-2">{{ 'ECommerce::CardDetails' | abpLocalization }}</p>
+                  <iframe
+                    [src]="url"
+                    class="paymob-iframe"
+                    title="Paymob payment"
+                  ></iframe>
+                }
+              }
+              @if (isPayPal()) {
+                @if (intentLoading()) {
+                  <p class="text-muted mb-0">
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    {{ 'ECommerce::Loading' | abpLocalization }}...
+                  </p>
+                } @else {
+                  <div id="paypal-button-container" #paypalContainer></div>
+                }
+              }
+            </div>
+          </div>
+        }
+
+        <button type="button" class="btn btn-outline-secondary" (click)="backToCheckout()">
+          &larr; {{ 'ECommerce::BackToCheckout' | abpLocalization }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

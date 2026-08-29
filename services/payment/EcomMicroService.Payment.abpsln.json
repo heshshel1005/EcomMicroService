@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "EcomMicroService.Payment": {
+      "path": "EcomMicroService.Payment.abpmdl.json"
+    }
+  }
+}

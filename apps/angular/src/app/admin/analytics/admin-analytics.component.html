@@ -1,0 +1,137 @@
+<div class="row mb-3">
+  <div class="col-12 d-flex align-items-end justify-content-between flex-wrap gap-2">
+    <div>
+      <h1 class="mb-1">{{ 'ECommerce::Analytics' | abpLocalization }}</h1>
+      <p class="text-muted mb-0">
+        {{ 'ECommerce::AnalyticsDescription' | abpLocalization }}
+      </p>
+    </div>
+    <div class="d-flex align-items-end gap-2">
+      <div class="form-group mb-0">
+        <label class="form-label small text-muted d-block">
+          {{ 'ECommerce::From' | abpLocalization }}
+        </label>
+        <input class="form-control" type="date" [(ngModel)]="dateFrom" />
+      </div>
+      <div class="form-group mb-0">
+        <label class="form-label small text-muted d-block">
+          {{ 'ECommerce::To' | abpLocalization }}
+        </label>
+        <input class="form-control" type="date" [(ngModel)]="dateTo" />
+      </div>
+      <button class="btn btn-primary" type="button" (click)="refresh()">
+        <i class="fa fa-sync me-1"></i>
+        {{ 'ECommerce::Refresh' | abpLocalization }}
+      </button>
+      <button class="btn btn-outline-secondary" type="button" (click)="exportCsv()">
+        <i class="fa fa-file-export me-1"></i>
+        {{ 'ECommerce::ExportCsv' | abpLocalization }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="summary" class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small text-uppercase mb-1">
+          {{ 'ECommerce::TotalOrders' | abpLocalization }}
+        </div>
+        <div class="h3 mb-0">{{ summary.totalOrders }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small text-uppercase mb-1">
+          {{ 'ECommerce::TotalRevenue' | abpLocalization }}
+        </div>
+        <div class="h3 mb-0">{{ summary.totalRevenue | number: '1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="text-muted small text-uppercase mb-1">
+          {{ 'ECommerce::Period' | abpLocalization }}
+        </div>
+        <div class="mb-0">
+          <span *ngIf="summary.periodStart">{{ summary.periodStart | date: 'yyyy-MM-dd' }}</span>
+          <span *ngIf="summary.periodStart || summary.periodEnd"> - </span>
+          <span *ngIf="summary.periodEnd">{{ summary.periodEnd | date: 'yyyy-MM-dd' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">
+          {{ 'ECommerce::SalesByDay' | abpLocalization }}
+        </h5>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th>{{ 'ECommerce::Date' | abpLocalization }}</th>
+                <th class="text-end">{{ 'ECommerce::Orders' | abpLocalization }}</th>
+                <th class="text-end">{{ 'ECommerce::Revenue' | abpLocalization }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of byDay">
+                <td>{{ row.date | date: 'yyyy-MM-dd' }}</td>
+                <td class="text-end">{{ row.orderCount }}</td>
+                <td class="text-end">{{ row.revenue | number: '1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="byDay.length === 0">
+                <td colspan="3" class="text-center text-muted">
+                  {{ 'ECommerce::NoData' | abpLocalization }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title mb-3">
+          {{ 'ECommerce::TopProducts' | abpLocalization }}
+        </h5>
+        <div class="table-responsive">
+          <table class="table table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th>{{ 'ECommerce::Product' | abpLocalization }}</th>
+                <th class="text-end">{{ 'ECommerce::Quantity' | abpLocalization }}</th>
+                <th class="text-end">{{ 'ECommerce::Revenue' | abpLocalization }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of topProducts">
+                <td>{{ row.productName }}</td>
+                <td class="text-end">{{ row.quantity }}</td>
+                <td class="text-end">{{ row.revenue | number: '1.2-2' }}</td>
+              </tr>
+              <tr *ngIf="topProducts.length === 0">
+                <td colspan="3" class="text-center text-muted">
+                  {{ 'ECommerce::NoData' | abpLocalization }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

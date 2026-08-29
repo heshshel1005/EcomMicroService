@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>EcomMicroService.Cms</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Volo.Abp.Ddd.Domain" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.CmsKit.Domain" Version="$(AbpVersion)" />
+        <ProjectReference Include="..\EcomMicroService.Cms.Domain.Shared\EcomMicroService.Cms.Domain.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

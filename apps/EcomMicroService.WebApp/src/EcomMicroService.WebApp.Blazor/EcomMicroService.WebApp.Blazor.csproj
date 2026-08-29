@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="$(MicrosoftAspNetVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\..\shared\EcomMicroService.Hosting.Shared\EcomMicroService.Hosting.Shared.csproj" />
+        <ProjectReference Include="..\..\..\..\shared\EcomMicroService.ServiceDefaults\EcomMicroService.ServiceDefaults.csproj" />
+        <ProjectReference Include="..\EcomMicroService.WebApp.Blazor.Client\EcomMicroService.WebApp.Blazor.Client.csproj" />
+    </ItemGroup>
+
+</Project>

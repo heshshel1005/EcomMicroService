@@ -1,0 +1,139 @@
+<div class="card">
+  <div class="card-body">
+    <h3 class="card-title">{{ 'ECommerce::CustomerProfile' | abpLocalization }}</h3>
+    <p class="text-muted small mb-3">{{ 'ECommerce::CustomerProfileDescription' | abpLocalization }}</p>
+    @if (profileLoading()) {
+      <p class="text-muted mb-0">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+    } @else if (editingProfile()) {
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="mb-2">
+          <label class="form-label">{{ 'ECommerce::ContactName' | abpLocalization }}</label>
+          <input type="text" class="form-control form-control-sm" formControlName="displayName" />
+        </div>
+        <div class="mb-2">
+          <label class="form-label">{{ 'ECommerce::ContactPhone' | abpLocalization }}</label>
+          <input type="text" class="form-control form-control-sm" formControlName="phoneNumber" />
+        </div>
+        <div class="mb-2">
+          <label class="form-label">{{ 'ECommerce::ContactEmail' | abpLocalization }}</label>
+          <input type="text" class="form-control form-control-sm" [value]="profile()?.email" readonly disabled />
+          <small class="text-muted">{{ 'ECommerce::EmailNotEditable' | abpLocalization }}</small>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm me-1" [disabled]="profileForm.invalid || savingProfile()">
+          {{ 'ECommerce::Save' | abpLocalization }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelEditProfile()">
+          {{ 'ECommerce::Cancel' | abpLocalization }}
+        </button>
+      </form>
+    } @else {
+      <dl class="row mb-0 small">
+        <dt class="col-sm-3">{{ 'ECommerce::ContactName' | abpLocalization }}</dt>
+        <dd class="col-sm-9">{{ profile()?.displayName || '—' }}</dd>
+        <dt class="col-sm-3">{{ 'ECommerce::ContactPhone' | abpLocalization }}</dt>
+        <dd class="col-sm-9">{{ profile()?.phoneNumber || '—' }}</dd>
+        <dt class="col-sm-3">{{ 'ECommerce::ContactEmail' | abpLocalization }}</dt>
+        <dd class="col-sm-9">{{ profile()?.email || '—' }}</dd>
+      </dl>
+      <button type="button" class="btn btn-outline-primary btn-sm mt-2" (click)="startEditProfile()">
+        {{ 'ECommerce::Edit' | abpLocalization }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <h5 class="card-title">{{ 'ECommerce::ShippingAddress' | abpLocalization }} / {{ 'ECommerce::BillingAddress' | abpLocalization }}</h5>
+    @if (addressesLoading()) {
+      <p class="text-muted mb-0 small">{{ 'ECommerce::Loading' | abpLocalization }}</p>
+    } @else {
+      <ul class="list-group list-group-flush mb-3">
+        @for (addr of addresses(); track addr.id) {
+          <li class="list-group-item px-0">
+            <div class="d-flex justify-content-between align-items-start">
+              <div class="small">
+                <strong>{{ addr.label || ('ECommerce::Address' | abpLocalization) }}</strong>
+                @if (addr.isDefaultShipping) { <span class="badge bg-secondary ms-1">{{ 'ECommerce::ShippingAddress' | abpLocalization }}</span> }
+                @if (addr.isDefaultBilling) { <span class="badge bg-secondary ms-1">{{ 'ECommerce::BillingAddress' | abpLocalization }}</span> }
+                <div>{{ addr.street }}{{ addr.city ? ', ' + addr.city : '' }}{{ addr.region ? ', ' + addr.region : '' }} {{ addr.postalCode || '' }} {{ addr.country || '' }}</div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-link btn-sm p-0 me-1" (click)="editAddress(addr)">{{ 'ECommerce::Edit' | abpLocalization }}</button>
+                <button type="button" class="btn btn-link btn-sm p-0 text-danger" (click)="deleteAddress(addr.id)">{{ 'ECommerce::Delete' | abpLocalization }}</button>
+              </div>
+            </div>
+          </li>
+        }
+      </ul>
+      @if (addresses().length === 0 && !showAddressForm()) {
+        <p class="text-muted small mb-2">{{ 'ECommerce::NoAddressesYet' | abpLocalization }}</p>
+      }
+      @if (showAddressForm()) {
+        <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="border rounded p-3 bg-light">
+          <h6 class="mb-2">{{ editingAddressId() ? ('ECommerce::Edit' | abpLocalization) : ('ECommerce::AddAddress' | abpLocalization) }}</h6>
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label">{{ 'ECommerce::AddressLabel' | abpLocalization }}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="label" placeholder="{{ 'ECommerce::AddressLabelPlaceholder' | abpLocalization }}" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">{{ 'ECommerce::Street' | abpLocalization }} *</label>
+              <input type="text" class="form-control form-control-sm" formControlName="street" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ 'ECommerce::City' | abpLocalization }}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="city" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ 'ECommerce::Region' | abpLocalization }}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="region" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ 'ECommerce::PostalCode' | abpLocalization }}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="postalCode" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">{{ 'ECommerce::Country' | abpLocalization }}</label>
+              <input type="text" class="form-control form-control-sm" formControlName="country" />
+            </div>
+            <div class="col-12">
+              <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="defShip" formControlName="isDefaultShipping" />
+                <label class="form-check-label" for="defShip">{{ 'ECommerce::DefaultShipping' | abpLocalization }}</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="defBill" formControlName="isDefaultBilling" />
+                <label class="form-check-label" for="defBill">{{ 'ECommerce::DefaultBilling' | abpLocalization }}</label>
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm mt-2 me-1" [disabled]="addressForm.invalid || savingAddress()">{{ 'ECommerce::Save' | abpLocalization }}</button>
+          <button type="button" class="btn btn-outline-secondary btn-sm mt-2" (click)="cancelAddressForm()">{{ 'ECommerce::Cancel' | abpLocalization }}</button>
+        </form>
+      } @else {
+        <button type="button" class="btn btn-outline-primary btn-sm" (click)="addAddress()">{{ 'ECommerce::AddAddress' | abpLocalization }}</button>
+      }
+    }
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div class="card-body">
+    <h5 class="card-title">{{ 'ECommerce::Newsletter' | abpLocalization }}</h5>
+    <p class="text-muted small mb-2">{{ 'ECommerce::SubscribeToNewsletter' | abpLocalization }}</p>
+    @if (newsletterLoading()) {
+      <span class="text-muted">{{ 'ECommerce::Loading' | abpLocalization }}</span>
+    } @else {
+      @if (newsletterSubscribed()) {
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="unsubscribeNewsletter()" [disabled]="newsletterActionInProgress()">
+          {{ 'ECommerce::Unsubscribe' | abpLocalization }}
+        </button>
+      } @else {
+        <button type="button" class="btn btn-primary btn-sm" (click)="subscribeNewsletter()" [disabled]="newsletterActionInProgress()">
+          {{ 'ECommerce::NewsletterSubscribe' | abpLocalization }}
+        </button>
+      }
+    }
+  </div>
+</div>

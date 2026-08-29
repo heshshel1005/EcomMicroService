@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace />
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="$(MicrosoftAspNetVersion)" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+        <PackageReference Include="Volo.Abp.AspNetCore" Version="$(AbpVersion)" />
+        <PackageReference Include="Volo.Abp.AspNetCore.Authentication.JwtBearer" Version="$(AbpVersion)" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\..\services\administration\src\EcomMicroService.Administration.EntityFrameworkCore\EcomMicroService.Administration.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\EcomMicroService.Hosting.Shared\EcomMicroService.Hosting.Shared.csproj" />
+    </ItemGroup>
+    
+</Project>
