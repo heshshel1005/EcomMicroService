@@ -24,12 +24,17 @@ public class CatalogDomainSharedModule : AbpModule
                 .Resources.Add<CatalogResource>("en")
                 .AddBaseTypes(typeof(AbpValidationResource))
                 .AddVirtualJson("/Localization/Catalog");
+
+            options
+                .Resources.Add<ECommerceResource>("en")
+                .AddBaseTypes(typeof(AbpValidationResource))
+                .AddVirtualJson("/Localization/Catalog");
         });
 
         Configure<AbpExceptionLocalizationOptions>(options =>
         {
             options.MapCodeNamespace("Catalog", typeof(CatalogResource));
-            options.MapCodeNamespace("ECommerce", typeof(CatalogResource));
+            options.MapCodeNamespace("ECommerce", typeof(ECommerceResource));
         });
     }
 }

@@ -67,8 +67,11 @@ export class CategoryEditComponent implements OnInit {
     this.defaultLanguage.set(defaultLanguage);
 
     this.categoryService.getList().subscribe({
-      next: (list) => this.parentOptions.set(list),
-      error: () => this.loading.set(false),
+      next: (list) => this.parentOptions.set(Array.isArray(list) ? list : []),
+      error: () => {
+        this.parentOptions.set([]);
+        this.toaster.error('ECommerce::ErrorLoadingCategories', 'Error');
+      },
     });
 
     const id = this.route.snapshot.paramMap.get('id');

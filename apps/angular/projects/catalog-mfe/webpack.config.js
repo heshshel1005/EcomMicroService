@@ -1,6 +1,6 @@
 const { shareAll, withModuleFederationPlugin } = require('@angular-architects/module-federation/webpack');
 
-module.exports = withModuleFederationPlugin({
+const config = withModuleFederationPlugin({
 
   name: 'catalogMfe',
 
@@ -13,3 +13,14 @@ module.exports = withModuleFederationPlugin({
   },
 
 });
+
+config.output = {
+  ...config.output,
+  publicPath: 'http://localhost:4201/',
+  environment: {
+    ...(config.output && config.output.environment),
+    module: false,
+  },
+};
+
+module.exports = config;

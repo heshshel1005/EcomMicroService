@@ -36,7 +36,7 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryService.getList().subscribe({
-      next: (list) => this.categories.set(list),
+      next: (list) => this.categories.set(Array.isArray(list) ? list : []),
       error: () => {},
     });
     this.brandService.getList(true).subscribe({

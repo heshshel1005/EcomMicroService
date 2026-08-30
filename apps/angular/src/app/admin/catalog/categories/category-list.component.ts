@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LocalizationPipe } from '@abp/ng.core';
 import { ToasterService } from '@abp/ng.theme.shared';
+import { finalize, timeout } from 'rxjs/operators';
 import { CategoryService, CategoryTreeDto } from './category.service';
 import { CategoryTreeComponent } from './category-tree.component';
 
@@ -16,26 +17,32 @@ export class CategoryListComponent implements OnInit {
   private readonly categoryService = inject(CategoryService);
   private readonly toaster = inject(ToasterService);
 
-  tree: CategoryTreeDto[] = [];
-  loading = true;
-  deletingId: string | null = null;
+  tree = signal<CategoryTreeDto[]>([]);
+  loading = signal(true);
+  deletingId = signal<string | null>(null);
 
   ngOnInit(): void {
     this.loadTree();
   }
 
   loadTree(): void {
-    this.loading = true;
-    this.categoryService.getTree().subscribe({
-      next: (data) => {
-        this.tree = data;
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-        this.toaster.error('ECommerce::ErrorLoadingCategories', 'Error');
-      },
-    });
+    this.loading.set(true);
+    this.categoryService
+      .getTree()
+      .pipe(
+        timeout(20000),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        next: (data) => this.tree.set(Array.isArray(data) ? data : []),
+        error: (err) => {
+          this.tree.set([]);
+          this.toaster.error(
+            err?.error?.error?.message || 'ECommerce::ErrorLoadingCategories',
+            'Error',
+          );
+        },
+      });
   }
 
   deleteCategory(node: CategoryTreeDto): void {
@@ -44,15 +51,15 @@ export class CategoryListComponent implements OnInit {
       return;
     }
     if (!confirm(this.getLocalizedConfirmDelete())) return;
-    this.deletingId = node.id;
+    this.deletingId.set(node.id);
     this.categoryService.delete(node.id).subscribe({
       next: () => {
-        this.deletingId = null;
+        this.deletingId.set(null);
         this.toaster.success('ECommerce::CategoryDeleted', 'Success');
         this.loadTree();
       },
       error: (err) => {
-        this.deletingId = null;
+        this.deletingId.set(null);
         this.toaster.error(err?.error?.error?.message || 'Error', 'Error');
       },
     });
@@ -60,7 +67,6 @@ export class CategoryListComponent implements OnInit {
 
   private getLocalizedConfirmDelete(): string {
     try {
-      const key = 'ECommerce::ConfirmDeleteCategory';
       const lang = (document.documentElement.lang || 'en').startsWith('ar') ? 'ar' : 'en';
       if (lang === 'ar') return 'هل أنت متأكد من حذف هذه الفئة؟';
       return 'Are you sure you want to delete this category?';

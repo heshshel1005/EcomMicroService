@@ -90,7 +90,11 @@
             },
             "development": {
               "buildOptimizer": false,
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": false
+              },
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
@@ -207,7 +211,11 @@
             },
             "development": {
               "buildOptimizer": false,
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": false
+              },
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
@@ -328,7 +336,11 @@
             },
             "development": {
               "buildOptimizer": false,
-              "optimization": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true,
+                "fonts": false
+              },
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,

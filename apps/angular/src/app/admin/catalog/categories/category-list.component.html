@@ -9,15 +9,15 @@
         </a>
       </div>
       <div class="card-body">
-        @if (loading) {
+        @if (loading()) {
           <p class="text-muted mb-0">{{ 'ECommerce::Loading' | abpLocalization }}</p>
         } @else {
           <app-category-tree
-            [nodes]="tree"
-            [deletingId]="deletingId"
+            [nodes]="tree()"
+            [deletingId]="deletingId()"
             (delete)="deleteCategory($event)"
           />
-          @if (tree.length === 0) {
+          @if (tree().length === 0) {
             <p class="text-muted mb-0">{{ 'ECommerce::NoCategories' | abpLocalization }}</p>
           }
         }

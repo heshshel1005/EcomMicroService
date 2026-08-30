@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using EcomMicroService.Catalog;
 using Microsoft.AspNetCore.Mvc;
-using Volo.Abp.AspNetCore.Mvc;
+using Volo.Abp;
 
 namespace EcomMicroService.Catalog;
 
+[RemoteService(Name = CatalogRemoteServiceConsts.RemoteServiceName)]
 [Route("api/catalog/category")]
 [Area("catalog")]
 public class CategoryController : CatalogController
@@ -30,6 +31,7 @@ public class CategoryController : CatalogController
     /// <summary>
     /// Get a flat list of all categories.
     /// </summary>
+    [HttpGet]
     [HttpGet("list")]
     public async Task<List<CategoryDto>> GetListAsync()
     {
@@ -39,7 +41,7 @@ public class CategoryController : CatalogController
     /// <summary>
     /// Get a single category by id.
     /// </summary>
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<CategoryDto> GetAsync(Guid id)
     {
         return await _appService.GetAsync(id);
@@ -57,7 +59,7 @@ public class CategoryController : CatalogController
     /// <summary>
     /// Update a category.
     /// </summary>
-    [HttpPut("{id}")]
+    [HttpPut("{id:guid}")]
     public async Task<CategoryDto> UpdateAsync(Guid id, [FromBody] UpdateCategoryDto input)
     {
         return await _appService.UpdateAsync(id, input);
@@ -66,7 +68,7 @@ public class CategoryController : CatalogController
     /// <summary>
     /// Delete a category.
     /// </summary>
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:guid}")]
     public async Task DeleteAsync(Guid id)
     {
         await _appService.DeleteAsync(id);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using EcomMicroService.Catalog.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Data;
 using Volo.Abp.Localization;
@@ -30,7 +31,7 @@ public class CategoryAppService : CatalogAppService, ICategoryAppService
         _multiTenantFilter = multiTenantFilter;
     }
 
-    [Authorize]
+    [Authorize(CatalogPermissions.Catalog.Default)]
     public async Task<List<CategoryTreeDto>> GetTreeAsync()
     {
         await CatalogTaxonomyAccess.EnsureCanReadAdminTaxonomyAsync(PermissionChecker);
@@ -48,7 +49,7 @@ public class CategoryAppService : CatalogAppService, ICategoryAppService
         }
     }
 
-    [Authorize]
+    [Authorize(CatalogPermissions.Catalog.Default)]
     public async Task<List<CategoryDto>> GetListAsync()
     {
         await CatalogTaxonomyAccess.EnsureCanReadAdminTaxonomyAsync(PermissionChecker);
@@ -65,7 +66,7 @@ public class CategoryAppService : CatalogAppService, ICategoryAppService
         }
     }
 
-    [Authorize]
+    [Authorize(CatalogPermissions.Catalog.Default)]
     public async Task<CategoryDto> GetAsync(Guid id)
     {
         await CatalogTaxonomyAccess.EnsureCanReadAdminTaxonomyAsync(PermissionChecker);
@@ -170,18 +171,25 @@ public class CategoryAppService : CatalogAppService, ICategoryAppService
             AsyncExecuter);
     }
 
-    private static List<CategoryTreeDto> BuildTree(List<CategoryDto> flat, Guid? parentId)
+    private static List<CategoryTreeDto> BuildTree(List<CategoryDto> flat, Guid? parentId, HashSet<Guid>? visited = null)
     {
+        visited ??= new HashSet<Guid>();
         return flat
             .Where(x => x.ParentId == parentId)
-            .Select(dto => new CategoryTreeDto
+            .Select(dto =>
             {
-                Id = dto.Id,
-                ParentId = dto.ParentId,
-                Name = dto.Name,
-                Slug = dto.Slug,
-                DisplayOrder = dto.DisplayOrder,
-                Children = BuildTree(flat, dto.Id)
+                var children = visited.Add(dto.Id)
+                    ? BuildTree(flat, dto.Id, visited)
+                    : new List<CategoryTreeDto>();
+                return new CategoryTreeDto
+                {
+                    Id = dto.Id,
+                    ParentId = dto.ParentId,
+                    Name = dto.Name,
+                    Slug = dto.Slug,
+                    DisplayOrder = dto.DisplayOrder,
+                    Children = children
+                };
             })
             .ToList();
     }

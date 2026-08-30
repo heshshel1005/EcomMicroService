@@ -152,7 +152,7 @@ export class ProductEditComponent implements OnInit {
       error: () => {},
     });
     this.categoryService.getList().subscribe({
-      next: (list) => this.categoryOptions.set(list),
+      next: (list) => this.categoryOptions.set(Array.isArray(list) ? list : []),
       error: () => {},
     });
     this.productService.getAttributes().subscribe({

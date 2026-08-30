@@ -10,7 +10,7 @@ export const environment = {
     logoUrl: '',
   },
   localization: {
-    defaultResourceName: 'EcomMicroService',
+    defaultResourceName: 'ECommerce',
   },
   oAuthConfig: {
     issuer: 'https://localhost:7600/',

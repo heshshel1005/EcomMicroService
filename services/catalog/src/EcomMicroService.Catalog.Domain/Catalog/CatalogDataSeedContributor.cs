@@ -23,6 +23,7 @@ public class CatalogDataSeedContributor : IDataSeedContributor, ITransientDepend
     private readonly IRepository<AttributeDefinition, Guid> _attributeDefinitionRepository;
     private readonly IRepository<AttributeOption, Guid> _attributeOptionRepository;
     private readonly IRepository<ProductTypeAttributeRule, Guid> _productTypeAttributeRuleRepository;
+    private readonly IRepository<Category, Guid> _categoryRepository;
     private readonly IGuidGenerator _guidGenerator;
 
     public CatalogDataSeedContributor(
@@ -31,6 +32,7 @@ public class CatalogDataSeedContributor : IDataSeedContributor, ITransientDepend
         IRepository<AttributeDefinition, Guid> attributeDefinitionRepository,
         IRepository<AttributeOption, Guid> attributeOptionRepository,
         IRepository<ProductTypeAttributeRule, Guid> productTypeAttributeRuleRepository,
+        IRepository<Category, Guid> categoryRepository,
         IGuidGenerator guidGenerator)
     {
         _attributeRepository = attributeRepository;
@@ -38,6 +40,7 @@ public class CatalogDataSeedContributor : IDataSeedContributor, ITransientDepend
         _attributeDefinitionRepository = attributeDefinitionRepository;
         _attributeOptionRepository = attributeOptionRepository;
         _productTypeAttributeRuleRepository = productTypeAttributeRuleRepository;
+        _categoryRepository = categoryRepository;
         _guidGenerator = guidGenerator;
     }
 
@@ -51,6 +54,7 @@ public class CatalogDataSeedContributor : IDataSeedContributor, ITransientDepend
 
         await SeedVariantAttributesAsync();
         await SeedAutoPartProductTypeAsync(context.TenantId);
+        await SeedDefaultCategoriesAsync(context.TenantId);
     }
 
     private async Task SeedVariantAttributesAsync()
@@ -206,5 +210,37 @@ public class CatalogDataSeedContributor : IDataSeedContributor, ITransientDepend
             displayOrder);
         rule.TenantId = tenantId;
         await _productTypeAttributeRuleRepository.InsertAsync(rule);
+    }
+
+    private async Task SeedDefaultCategoriesAsync(Guid? tenantId)
+    {
+        if (await _categoryRepository.GetCountAsync() > 0)
+        {
+            return;
+        }
+
+        var seeds = new (string Name, string Slug, int DisplayOrder)[]
+        {
+            ("General", "general", 0),
+            ("Electronics", "electronics", 10),
+            ("Accessories", "accessories", 20),
+        };
+
+        const string defaultLanguage = "en";
+        foreach (var seed in seeds)
+        {
+            var id = _guidGenerator.Create();
+            var category = new Category(id, seed.Name, seed.Slug, parentId: null, seed.DisplayOrder)
+            {
+                TenantId = tenantId
+            };
+            category.SetTranslations(
+                new[]
+                {
+                    new CategoryTranslation(_guidGenerator.Create(), id, defaultLanguage, seed.Name)
+                },
+                defaultLanguage);
+            await _categoryRepository.InsertAsync(category);
+        }
     }
 }
