@@ -18,16 +18,16 @@ public class CatalogPermissionDefinitionProvider : PermissionDefinitionProvider
         administration.MultiTenancySide = MultiTenancySides.Both;
 
         var catalog = GetOrAddChild(administration, CatalogPermissions.Catalog.Default, L("Permission:Catalog"));
-        catalog.MultiTenancySide = MultiTenancySides.Tenant;
+        catalog.MultiTenancySide = MultiTenancySides.Both;
 
         var hostCatalogTaxonomy = GetOrAddChild(administration, CatalogPermissions.Catalog.HostTaxonomy, L("Permission:Catalog.HostTaxonomy"));
         hostCatalogTaxonomy.MultiTenancySide = MultiTenancySides.Host;
 
         var brands = GetOrAddChild(catalog, CatalogPermissions.Catalog.Brands, L("Permission:Catalog.Brands"));
-        brands.MultiTenancySide = MultiTenancySides.Tenant;
+        brands.MultiTenancySide = MultiTenancySides.Both;
 
         var brandModels = GetOrAddChild(catalog, CatalogPermissions.Catalog.BrandModels, L("Permission:Catalog.BrandModels"));
-        brandModels.MultiTenancySide = MultiTenancySides.Tenant;
+        brandModels.MultiTenancySide = MultiTenancySides.Both;
 
         var attributeDefinitionsReview = GetOrAddChild(catalog, CatalogPermissions.Catalog.AttributeDefinitionsReview, L("Permission:Catalog.AttributeDefinitions.Review"));
         attributeDefinitionsReview.MultiTenancySide = MultiTenancySides.Both;

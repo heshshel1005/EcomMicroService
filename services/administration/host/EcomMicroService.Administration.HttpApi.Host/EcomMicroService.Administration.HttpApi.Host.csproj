@@ -18,6 +18,15 @@
         <ProjectReference Include="..\..\..\identity\src\EcomMicroService.IdentityService.EntityFrameworkCore\EcomMicroService.IdentityService.EntityFrameworkCore.csproj" />
         <ProjectReference Include="..\..\..\saas\src\EcomMicroService.SaaS.Application.Contracts\EcomMicroService.SaaS.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\..\saas\src\EcomMicroService.SaaS.EntityFrameworkCore\EcomMicroService.SaaS.EntityFrameworkCore.csproj" />
+        <ProjectReference Include="..\..\..\catalog\src\EcomMicroService.Catalog.Application.Contracts\EcomMicroService.Catalog.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\ordering\src\EcomMicroService.Ordering.Application.Contracts\EcomMicroService.Ordering.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\basket\src\EcomMicroService.Basket.Application.Contracts\EcomMicroService.Basket.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\customer\src\EcomMicroService.Customer.Application.Contracts\EcomMicroService.Customer.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\payment\src\EcomMicroService.Payment.Application.Contracts\EcomMicroService.Payment.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\marketing\src\EcomMicroService.Marketing.Application.Contracts\EcomMicroService.Marketing.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\cms\src\EcomMicroService.Cms.Application.Contracts\EcomMicroService.Cms.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\notification\src\EcomMicroService.Notification.Application.Contracts\EcomMicroService.Notification.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\..\projects\src\EcomMicroService.Projects.Application.Contracts\EcomMicroService.Projects.Application.Contracts.csproj" />
         <ProjectReference Include="..\..\src\EcomMicroService.Administration.HttpApi\EcomMicroService.Administration.HttpApi.csproj" />
         <ProjectReference Include="..\..\src\EcomMicroService.Administration.Application\EcomMicroService.Administration.Application.csproj" />
         <ProjectReference Include="..\..\src\EcomMicroService.Administration.EntityFrameworkCore\EcomMicroService.Administration.EntityFrameworkCore.csproj" />

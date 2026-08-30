@@ -4,15 +4,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using EcomMicroService.Administration.EntityFrameworkCore;
+using EcomMicroService.Basket;
+using EcomMicroService.Catalog;
+using EcomMicroService.Cms;
+using EcomMicroService.Customer;
 using EcomMicroService.IdentityService;
 using EcomMicroService.IdentityService.EntityFrameworkCore;
+using EcomMicroService.Marketing;
 using EcomMicroService.MultiTenancy;
+using EcomMicroService.Notification;
+using EcomMicroService.Ordering;
+using EcomMicroService.Payment;
+using EcomMicroService.Projects;
 using EcomMicroService.SaaS;
 using EcomMicroService.SaaS.EntityFrameworkCore;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
+using Volo.Abp.FeatureManagement;
 using Volo.Abp.Identity;
 using Volo.Abp.Modularity;
+using Volo.Abp.PermissionManagement;
+using Volo.Abp.SettingManagement;
 using Volo.Abp.VirtualFileSystem;
 
 namespace EcomMicroService.Administration;
@@ -26,6 +38,15 @@ namespace EcomMicroService.Administration;
 [DependsOn(typeof(IdentityServiceEntityFrameworkCoreModule))]
 [DependsOn(typeof(SaaSApplicationContractsModule))]
 [DependsOn(typeof(SaaSEntityFrameworkCoreModule))]
+[DependsOn(typeof(CatalogApplicationContractsModule))]
+[DependsOn(typeof(OrderingApplicationContractsModule))]
+[DependsOn(typeof(BasketApplicationContractsModule))]
+[DependsOn(typeof(CustomerApplicationContractsModule))]
+[DependsOn(typeof(PaymentApplicationContractsModule))]
+[DependsOn(typeof(MarketingApplicationContractsModule))]
+[DependsOn(typeof(CmsApplicationContractsModule))]
+[DependsOn(typeof(NotificationApplicationContractsModule))]
+[DependsOn(typeof(ProjectsApplicationContractsModule))]
 [DependsOn(typeof(EcomMicroServiceMicroserviceModule))]
 [DependsOn(typeof(EcomMicroServiceServiceDefaultsModule))]
 public class AdministrationHttpApiHostModule : AbpModule
@@ -36,6 +57,19 @@ public class AdministrationHttpApiHostModule : AbpModule
         var configuration = context.Services.GetConfiguration();
 
         context.ConfigureMicroservice(EcomMicroServiceNames.AdministrationApi);
+
+        Configure<PermissionManagementOptions>(options =>
+        {
+            options.IsDynamicPermissionStoreEnabled = true;
+        });
+        Configure<FeatureManagementOptions>(options =>
+        {
+            options.IsDynamicFeatureStoreEnabled = true;
+        });
+        Configure<SettingManagementOptions>(options =>
+        {
+            options.IsDynamicSettingStoreEnabled = true;
+        });
 
         if (hostingEnvironment.IsDevelopment())
         {

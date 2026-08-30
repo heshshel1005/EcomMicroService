@@ -34,6 +34,7 @@ public class IdentityServiceHttpApiHostModule : AbpModule
         Configure<Volo.Abp.PermissionManagement.PermissionManagementOptions>(options =>
         {
             options.SaveStaticPermissionsToDatabase = false;
+            options.IsDynamicPermissionStoreEnabled = true;
         });
         Configure<Volo.Abp.SettingManagement.SettingManagementOptions>(options =>
         {
